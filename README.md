@@ -1,11 +1,11 @@
-# Badri Rajendran — Developer Portfolio
+# Badri Rajendran — AI Engineer Portfolio
 
-> **Reliable AI is an engineering problem. I build full-stack systems that treat it like one.**
+> **Reliable AI is an engineering problem. I build production LLM systems that treat it like one.**
 
-A personal portfolio for a software engineer working on **GenAI & agentic systems**. The whole page is built as a single, dependency-free `index.html` and renders like an *agent execution trace* — a gold SVG filament draws itself down the page as you scroll, a comet-head walks its leading edge, and each section ignites as a node in the graph. Over a living night-sky background, the cursor is replaced by a glowing star that trails stardust.
+A personal portfolio for an **AI engineer** working on **LLM agents, RAG, and evals** — with 4+ years of software engineering. The whole page is built as a single, dependency-free `index.html` and renders like an *agent execution trace* — a gold SVG filament draws itself down the page as you scroll, a comet-head walks its leading edge, and each section ignites as a node in the graph. Over a living night-sky background, the cursor is replaced by a glowing star that trails stardust.
 
 <p align="center">
-  <a href="https://badri-narayanan.github.io"><img alt="Live site" src="https://img.shields.io/badge/live-badri--narayanan.github.io-F2B043?style=flat-square&logo=github"></a>
+  <a href="https://badri-rajendran.github.io"><img alt="Live site" src="https://img.shields.io/badge/live-badri--rajendran.github.io-F2B043?style=flat-square&logo=github"></a>
   <img alt="HTML5" src="https://img.shields.io/badge/HTML5-vanilla-E34F26?style=flat-square&logo=html5&logoColor=white">
   <img alt="CSS3" src="https://img.shields.io/badge/CSS3-no_framework-1572B6?style=flat-square&logo=css3&logoColor=white">
   <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-zero_deps-F7DF1E?style=flat-square&logo=javascript&logoColor=black">
@@ -14,7 +14,7 @@ A personal portfolio for a software engineer working on **GenAI & agentic system
 </p>
 
 <p align="center">
-  <a href="https://badri-narayanan.github.io"><strong>🔭 View the live site →</strong></a>
+  <a href="https://badri-rajendran.github.io"><strong>🔭 View the live site →</strong></a>
 </p>
 
 ![Portfolio preview](preview.png)
@@ -66,8 +66,8 @@ A few decisions worth calling out, since they're the interesting part:
 ## 🚀 Run locally
 
 ```bash
-git clone https://github.com/Badri-Narayanan/Badri-Narayanan.github.io.git
-cd Badri-Narayanan.github.io
+git clone https://github.com/Badri-Rajendran/Badri-Rajendran.github.io.git
+cd Badri-Rajendran.github.io
 
 # open it directly...
 open index.html            # macOS  (use 'start' on Windows / 'xdg-open' on Linux)
@@ -82,12 +82,12 @@ No install step, no bundler, no `node_modules`.
 
 ## 🌐 Deploy to GitHub Pages
 
-1. Push `index.html` (plus `preview.png` and your résumé PDF) to the repo root.
+1. Push `index.html` (plus `preview.png` and `BadriRajendran_Resume.pdf`) to the repo root.
 2. **Settings → Pages → Source:** deploy from `main`, folder `/ (root)`.
-3. If the repo is named `Badri-Narayanan.github.io`, it goes live at the root domain automatically:
+3. If the repo is named `Badri-Rajendran.github.io`, it goes live at the root domain automatically:
 
 ```
-https://badri-narayanan.github.io
+https://badri-rajendran.github.io
 ```
 
 ---
@@ -114,13 +114,13 @@ It renders automatically. Experience, skills, and social links are edited the sa
 
 ## 👋 About me
 
-I'm **Badri Rajendran**, a software engineer in the San Francisco Bay Area with **4+ years** building full-stack and backend systems in Java/Spring and Python — now focused on taking generative AI from demo to production: multi-agent orchestration, RAG, LLM evals, and MCP servers, held to real reliability bars.
+I'm **Badri Rajendran**, an **AI engineer** in the San Francisco Bay Area building production LLM systems — **multi-agent orchestration, RAG, LLM evals, and MCP servers** — with **4+ years** of software engineering across full-stack and backend systems in Java/Spring and Python, held to real reliability bars.
 
 - 🤖 Currently building **CodeSage** — a Claude-powered multi-agent PR reviewer on LangGraph (pgvector RAG · LLM-as-Judge evals · MCP server).
-- 🎓 **M.S. Computer Science**, Stevens Institute of Technology.
-- 🧭 Open to full-stack & GenAI engineering roles.
+- 🎓 **M.S. Computer Science**, Stevens Institute of Technology · **B.E. Computer Science**, Anna University.
+- 🧭 Open to **AI Engineer, Forward Deployed Engineer, and GenAI-focused software roles**.
 
-📄 **[Download my résumé](BadriRajendran_Resume_SDE.pdf)**
+📄 **[Download my résumé](BadriRajendran_Resume.pdf)**
 
 ---
 
@@ -129,11 +129,11 @@ I'm **Badri Rajendran**, a software engineer in the San Francisco Bay Area with 
 | | |
 | --- | --- |
 | 📧 Email | [badriathindran@gmail.com](mailto:badriathindran@gmail.com) |
-| 💼 LinkedIn | [badri-narayanan-rajendran](https://www.linkedin.com/in/badri-narayanan-rajendran/) |
-| 🐙 GitHub | [@Badri-Narayanan](https://github.com/Badri-Narayanan) |
+| 💼 LinkedIn | [badri-rajendran](https://www.linkedin.com/in/badri-rajendran/) |
+| 🐙 GitHub | [@Badri-Rajendran](https://github.com/Badri-Rajendran) |
 | 🐦 X / Twitter | [@badhrirajen](https://x.com/badhrirajen) |
 | 📺 YouTube | [@BadriRajendran](https://youtube.com/@BadriRajendran) |
-| 🧮 LeetCode | [badhri_narayanan](https://leetcode.com/u/badhri_narayanan/) |
+| 🧮 LeetCode | [badhri_rajendran](https://leetcode.com/u/badhri_rajendran/) |
 | 🏅 Codeforces | [badhrirajen](https://codeforces.com/profile/badhrirajen) |
 
 ---

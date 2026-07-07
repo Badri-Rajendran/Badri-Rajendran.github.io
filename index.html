@@ -3,13 +3,35 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Badri Rajendran — Software Engineer · GenAI &amp; Agentic Systems</title>
-<meta name="description" content="Badri Rajendran is a full-stack software engineer in the San Francisco Bay Area building agentic systems — multi-agent orchestration, RAG, and evals — and shipping reliable, AI-forward products." />
+<title>Badri Rajendran — AI Engineer · Agents, RAG &amp; Evals</title>
+<meta name="description" content="Badri Rajendran is an AI engineer in the San Francisco Bay Area building production LLM systems — multi-agent orchestration, RAG, and evals — with 4+ years of software engineering across full-stack and cloud." />
 <meta name="author" content="Badri Rajendran" />
-<meta property="og:title" content="Badri Rajendran — Software Engineer · GenAI & Agentic Systems" />
-<meta property="og:description" content="Reliable AI is an engineering problem. I build full-stack systems that treat it like one." />
+<link rel="canonical" href="https://badri-rajendran.github.io/" />
+<meta property="og:title" content="Badri Rajendran — AI Engineer · Agents, RAG & Evals" />
+<meta property="og:description" content="Reliable AI is an engineering problem. I build production LLM systems that treat it like one." />
 <meta property="og:type" content="profile" />
+<meta property="og:url" content="https://badri-rajendran.github.io/" />
 <meta name="theme-color" content="#0A0D13" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Badri Rajendran",
+  "jobTitle": "AI Engineer",
+  "description": "AI engineer building production LLM systems — agents, RAG, and evals — with 4+ years of software engineering.",
+  "url": "https://badri-rajendran.github.io/",
+  "email": "mailto:badriathindran@gmail.com",
+  "address": { "@type": "PostalAddress", "addressRegion": "CA", "addressCountry": "US" },
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "Stevens Institute of Technology" },
+    { "@type": "CollegeOrUniversity", "name": "Anna University" }
+  ],
+  "sameAs": [
+    "https://www.linkedin.com/in/badri-rajendran/",
+    "https://github.com/Badri-Rajendran"
+  ]
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -292,6 +314,7 @@ section{ position:relative; scroll-margin-top:90px; }
 /* --- education --- */
 .edu{ padding:clamp(60px,9vh,110px) 0; }
 .edu__grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:clamp(28px,5vw,64px); align-items:start; }
+.edu__stack{ display:grid; gap:20px; }
 .edu__head{ margin-bottom:44px; }
 .degree{ border:1px solid var(--line); border-radius:18px; padding:clamp(26px,3vw,38px); background:linear-gradient(180deg,var(--surface),var(--ink-2)); position:relative; }
 .degree__cap{ width:50px; height:50px; border-radius:13px; border:1px solid var(--gold-deep); display:flex; align-items:center; justify-content:center; color:var(--gold-light); margin-bottom:22px; background:rgba(242,176,67,0.06); }
@@ -436,10 +459,10 @@ section{ position:relative; scroll-margin-top:90px; }
     <div class="container">
       <p class="boot" id="boot"><span class="prompt">$</span> <span id="bootText"></span><span class="caret" id="caret"></span></p>
       <h1 class="hero__name">Badri<br>Rajendran</h1>
-      <p class="hero__role"><span class="pip"></span> Software Engineer · GenAI &amp; Agentic Systems · Full-Stack</p>
+      <p class="hero__role"><span class="pip"></span> AI Engineer · Agents, RAG &amp; Evals · 4+ yrs Software Engineering</p>
       <div class="hero__thesis">
         <p class="big">Reliable AI is an engineering problem.</p>
-        <p class="sub">I build full-stack systems that treat it like one — multi-agent orchestration, RAG, and evals wired into products people depend on, and owned from design through deployment and on-call.</p>
+        <p class="sub">I build production LLM systems that treat it like one — multi-agent orchestration, RAG, and evals wired into products people depend on, and owned from design through deployment and on-call.</p>
       </div>
       <div class="hero__cta">
         <a href="#work" class="btn btn--primary">
@@ -447,13 +470,13 @@ section{ position:relative; scroll-margin-top:90px; }
           Follow the trace
         </a>
         <a href="#contact" class="btn btn--ghost">Get in touch</a>
-        <a href="BadriRajendran_Resume_SDE.pdf" target="_blank" rel="noopener" class="btn">
+        <a href="BadriRajendran_Resume.pdf" target="_blank" rel="noopener" class="btn">
           Résumé <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </a>
       </div>
       <div class="hero__stats">
-        <div class="stat"><div class="v">4+ yrs</div><div class="k">Production<br>engineering</div></div>
-        <div class="stat"><div class="v">50%</div><div class="k">Faster doc parsing<br>with GenAI</div></div>
+        <div class="stat"><div class="v">4+ yrs</div><div class="k">SDE foundation<br>behind the AI</div></div>
+        <div class="stat"><div class="v">50%</div><div class="k">Faster doc parsing<br>with RAG</div></div>
         <div class="stat"><div class="v">40%</div><div class="k">Faster PR review<br>(CodeSage)</div></div>
         <div class="stat"><div class="v">99%+</div><div class="k">Uptime owned<br>in production</div></div>
       </div>
@@ -469,9 +492,9 @@ section{ position:relative; scroll-margin-top:90px; }
       <div class="about__grid">
         <div class="about__copy"><h2 class="section-title reveal">The engineer<br>behind the <em>trace</em>.</h2></div>
         <div class="about__copy">
-          <p class="reveal">I'm Badri — a software engineer in the San Francisco Bay Area with <strong>4+ years</strong> building full-stack and backend systems in Java and Python. For the last few years I've been pulling generative AI out of the demo phase and into production: <span class="hl">multi-agent orchestration, retrieval-augmented generation, LLM evals, and MCP servers</span>, wired into customer-facing products and held to real reliability bars.</p>
+          <p class="reveal">I'm Badri — an AI engineer in the San Francisco Bay Area, with <strong>4+ years</strong> of software engineering across full-stack and backend systems in Java and Python. Today I pull generative AI out of the demo phase and into production: <span class="hl">multi-agent orchestration, retrieval-augmented generation, LLM evals, and MCP servers</span>, wired into customer-facing products and held to real reliability bars.</p>
           <p class="reveal d1">I care about the unglamorous parts — observability, cost tracking, test coverage, on-call — because that's the line between an AI feature that demos well and one people can lean on. I think in systems first: map the structure, stress-test it, then ship.</p>
-          <p class="reveal d2">I recently finished my <strong>M.S. in Computer Science</strong> at Stevens Institute of Technology, and I'm looking for a team building ambitious, AI-forward products where engineering rigor still matters.</p>
+          <p class="reveal d2">I recently finished my <strong>M.S. in Computer Science</strong> at Stevens Institute of Technology, and I'm looking for AI Engineer and Forward Deployed Engineer roles — teams building ambitious, AI-forward products where engineering rigor still matters.</p>
         </div>
       </div>
       <div class="about__grid" style="margin-top:clamp(36px,5vw,60px);">
@@ -519,7 +542,7 @@ section{ position:relative; scroll-margin-top:90px; }
       <div class="morework reveal">
         <a class="btn btn--ghost" href="https://github.com/Badri-Rajendran?tab=repositories" target="_blank" rel="noopener" data-interactive>
           <svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px"><path d="M12 .5A11.5 11.5 0 0 0 .5 12 11.5 11.5 0 0 0 8.4 23c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 5 18 5.3 18 5.3c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
-          See all 12 repositories
+          See all repositories
         </a>
       </div>
     </div>
@@ -547,18 +570,29 @@ section{ position:relative; scroll-margin-top:90px; }
         <h2 class="section-title reveal">Where I <em>trained</em>.</h2>
       </div>
       <div class="edu__grid">
-        <div class="degree reveal">
-          <div class="degree__cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5M22 10v6"/></svg></div>
-          <h3>Stevens Institute of Technology</h3>
-          <p class="prog">Master of Science in Computer Science</p>
-          <div class="meta">
-            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Aug 2024 — May 2026</span>
-            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.2-7-11a7 7 0 1114 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Hoboken, NJ</span>
+        <div class="edu__stack">
+          <div class="degree reveal">
+            <div class="degree__cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5M22 10v6"/></svg></div>
+            <h3>Stevens Institute of Technology</h3>
+            <p class="prog">Master of Science in Computer Science</p>
+            <div class="meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Aug 2024 — May 2026</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.2-7-11a7 7 0 1114 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Hoboken, NJ</span>
+            </div>
+            <div class="badges">
+              <span class="badge"><span class="bd"></span> ML &amp; Neural Networks</span>
+              <span class="badge"><span class="bd"></span> Data Mining</span>
+              <span class="badge"><span class="bd"></span> Distributed Systems</span>
+            </div>
           </div>
-          <div class="badges">
-            <span class="badge"><span class="bd"></span> ML &amp; Neural Networks</span>
-            <span class="badge"><span class="bd"></span> Data Mining</span>
-            <span class="badge"><span class="bd"></span> Distributed Systems</span>
+          <div class="degree reveal d1">
+            <div class="degree__cap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5M22 10v6"/></svg></div>
+            <h3>Anna University</h3>
+            <p class="prog">Bachelor of Engineering in Computer Science</p>
+            <div class="meta">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Aug 2018 — May 2022</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-5.2-7-11a7 7 0 1114 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Chennai, IN</span>
+            </div>
           </div>
         </div>
         <div class="signals reveal d1">
@@ -576,7 +610,7 @@ section{ position:relative; scroll-margin-top:90px; }
       <div class="contact__inner">
         <p class="eyebrow reveal"><span class="ln"></span><span class="num">06</span> handshake</p>
         <h2 class="reveal">Let's build<br>something <em>that holds up</em>.</h2>
-        <p class="reveal d1">I'm open to full-stack and GenAI engineering roles. If you're putting language models into a real product — or just want to talk agents, evals, and what makes them reliable — I'd love to hear from you.</p>
+        <p class="reveal d1">I'm open to AI Engineer, Forward Deployed Engineer, and GenAI-focused software roles. If you're putting language models into a real product — or just want to talk agents, evals, and what makes them reliable — I'd love to hear from you.</p>
         <a class="contact__primary reveal d1" href="mailto:badriathindran@gmail.com" data-interactive>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg>
           badriathindran@gmail.com
@@ -631,13 +665,13 @@ section{ position:relative; scroll-margin-top:90px; }
        { company, title, location, period, bullets:[ "html", ... ] }   */
     experience: [
       {
-        company: 'Panasia Estate', title: 'Software Developer',
+        company: 'Panasia Estate', title: 'AI Engineer',
         location: 'New York, USA', period: 'Sept 2025 — Mar 2026',
         bullets: [
-          "Built a full-stack property platform (React / TypeScript / Node) backed by Java/Spring Boot + Python microservices on AWS, tuning search &amp; listing APIs <span class='num'>~35%</span> faster.",
-          "Integrated GenAI via the <b>Claude API</b> and a <b>RAG pipeline</b> for automated document parsing, cutting processing time <span class='num'>~50%</span>.",
-          "Instrumented model-serving with latency tracing and per-request LLM cost tracking to surface bottlenecks and control spend.",
-          "Built CI/CD on GitHub Actions and Dockerized EKS with CloudWatch monitoring and on-call response — <span class='num'>99%+</span> uptime."
+          "Shipped a <b>Claude-powered RAG pipeline</b> — chunking, embeddings, vector search — for automated document parsing, cutting processing time <span class='num'>~50%</span>.",
+          "Instrumented <b>LLM serving</b> with latency tracing and per-request cost telemetry to surface bottlenecks and control spend.",
+          "Deployed GenAI features into a client-facing platform (React/TypeScript, Java/Spring Boot, Python/FastAPI), tuning API latency <span class='num'>~35%</span>.",
+          "Owned production reliability — GitHub Actions CI/CD, Dockerized EKS, CloudWatch on-call — sustaining <span class='num'>99%+</span> uptime."
         ]
       },
       {
@@ -651,7 +685,7 @@ section{ position:relative; scroll-margin-top:90px; }
         ]
       },
       {
-        company: 'iNeuron.ai', title: 'Software Developer',
+        company: 'iNeuron.ai', title: 'Software Development Engineer',
         location: 'Bengaluru, IN', period: 'Sept 2023 — July 2024',
         bullets: [
           "Delivered client-driven features across a React frontend and Python/Flask backend, translating specs into shipped solutions.",
@@ -661,11 +695,11 @@ section{ position:relative; scroll-margin-top:90px; }
         ]
       },
       {
-        company: 'Zoho Corporation', title: 'Software Developer',
+        company: 'Zoho Corporation', title: 'Software Engineer',
         location: 'Chennai, IN', period: 'Aug 2021 — July 2023',
         bullets: [
           "Built the <b>Zoho Expense–Payroll integration</b> in Java and Spring Boot, acquiring <span class='num'>100+</span> new Payroll customers.",
-          "Main contributor setting up Continuous Integration in the Zoho Books repository with GitLab CI/CD.",
+          "Led setup of the Continuous Integration system for the Zoho Books repository with GitLab CI/CD.",
           "Cut recurring production incidents <span class='num'>~30%</span> by root-causing abnormalities and coordinating timely fixes across teams.",
           "Designed feature flags and rollout safeguards to deploy integration changes incrementally without disrupting customers.",
           "Tuned query execution and concurrency for high-load Payroll operations, improving throughput and reducing contention.",
@@ -705,7 +739,7 @@ section{ position:relative; scroll-margin-top:90px; }
         },
         {
           title: 'NYC Real Estate Intelligence', subtitle: 'End-to-end ML pipeline · May 2026',
-          blurb: "Classifies NYC properties as undervalued, fair, or overvalued from <b>five public civic APIs</b> — Census, NYPD, NYC DOE, Walk Score — with an XGBoost model (<span class='num'>ROC-AUC 0.69</span>), a hybrid recommender, and a Claude conversational agent.",
+          blurb: "Classifies NYC properties as undervalued, fair, or overvalued from <b>five public civic APIs</b> — Census, NYPD, NYC DOE, Walk Score — with a full XGBoost feature-engineering pipeline, a hybrid recommender, and a Claude conversational agent.",
           tags: ['scikit-learn','XGBoost','SoQL','Claude'],
           lang: { name:'Python', color:'#3572A5' }, icon: 'building',
           links: [ { label:'Source', url:'https://github.com/Badri-Rajendran/NYC-Real-Estate-Intelligence', kind:'github' } ]
