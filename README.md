@@ -1,8 +1,8 @@
-# Badri Rajendran — AI Engineer Portfolio
+# Badri Rajendran — Full-Stack Software Engineer · GenAI — Portfolio
 
 > **Reliable AI is an engineering problem. I build production LLM systems that treat it like one.**
 
-A personal portfolio for an **AI engineer** working on **LLM agents, RAG, and evals** — with 4+ years of software engineering. The whole page is built as a single, dependency-free `index.html` and renders like an *agent execution trace* — a gold SVG filament draws itself down the page as you scroll, a comet-head walks its leading edge, and each section ignites as a node in the graph. Over a living night-sky background, the cursor is replaced by a glowing star that trails stardust.
+A personal portfolio for a **full-stack software engineer** with 4+ years building end-to-end systems — and recent production **GenAI** experience: **LLM agents, RAG, and evals**. The whole page is built as a single, dependency-free `index.html` and renders like an *agent execution trace* — a gold SVG filament draws itself down the page as you scroll, a comet-head walks its leading edge, and each section ignites as a node in the graph. Over a living night-sky background, the cursor is replaced by a glowing star that trails stardust.
 
 <p align="center">
   <a href="https://badri-rajendran.github.io"><img alt="Live site" src="https://img.shields.io/badge/live-badri--rajendran.github.io-F2B043?style=flat-square&logo=github"></a>
@@ -114,11 +114,11 @@ It renders automatically. Experience, skills, and social links are edited the sa
 
 ## 👋 About me
 
-I'm **Badri Rajendran**, an **AI engineer** in the San Francisco Bay Area building production LLM systems — **multi-agent orchestration, RAG, LLM evals, and MCP servers** — with **4+ years** of software engineering across full-stack and backend systems in Java/Spring and Python, held to real reliability bars.
+I'm **Badri Rajendran**, a **full-stack software engineer** in the San Francisco Bay Area with **4+ years** building end-to-end web, mobile, and backend systems in Java/Spring, Python, and TypeScript — and recent production GenAI experience: **multi-agent orchestration, RAG, LLM evals, and MCP servers**, held to real reliability bars.
 
-- 🤖 Currently building **CodeSage** — a Claude-powered multi-agent PR reviewer on LangGraph (pgvector RAG · LLM-as-Judge evals · MCP server).
+- 🤖 Recently built **CodeSage** — a Claude-powered multi-agent PR reviewer on LangGraph (pgvector RAG · LLM-as-Judge evals · MCP server). Currently building **PolicyPal** — a RAG-powered insurance Q&A chatbot (React/TypeScript · FastAPI · pgvector · open-source Hugging Face models).
 - 🎓 **M.S. Computer Science**, Stevens Institute of Technology · **B.E. Computer Science**, Anna University.
-- 🧭 Open to **AI Engineer, Forward Deployed Engineer, and GenAI-focused software roles**.
+- 🧭 Open to **Software Engineer, Full-Stack, and GenAI Engineer roles**.
 
 📄 **[Download my résumé](BadriRajendran_Resume.pdf)**
 
