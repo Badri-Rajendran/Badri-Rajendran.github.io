@@ -2,7 +2,7 @@
 
 > **Reliable AI is an engineering problem. I build production LLM systems that treat it like one.**
 
-A personal portfolio for a **full-stack software engineer** with 4+ years building end-to-end systems — and recent production **GenAI** experience: **LLM agents, RAG, and evals**. The whole page is built as a single, dependency-free `index.html` and renders like an *agent execution trace* — a gold SVG filament draws itself down the page as you scroll, a comet-head walks its leading edge, and each section ignites as a node in the graph. Over a living night-sky background, the cursor is replaced by a glowing star that trails stardust.
+A personal portfolio for a **full-stack software engineer** with 4+ years building end-to-end systems — currently working in production **GenAI**: **LLM agents, RAG, and evals**. The whole page is built as a single, dependency-free `index.html` and renders like an *agent execution trace* — a gold SVG filament draws itself down the page as you scroll, a comet-head walks its leading edge, and each section ignites as a node in the graph. Over a living night-sky background, the cursor is replaced by a glowing star that trails stardust.
 
 <p align="center">
   <a href="https://badri-rajendran.github.io"><img alt="Live site" src="https://img.shields.io/badge/live-badri--rajendran.github.io-F2B043?style=flat-square&logo=github"></a>
@@ -114,8 +114,9 @@ It renders automatically. Experience, skills, and social links are edited the sa
 
 ## 👋 About me
 
-I'm **Badri Rajendran**, a **full-stack software engineer** in the San Francisco Bay Area with **4+ years** building end-to-end web, mobile, and backend systems in Java/Spring, Python, and TypeScript — and recent production GenAI experience: **multi-agent orchestration, RAG, LLM evals, and MCP servers**, held to real reliability bars.
+I'm **Badri Rajendran**, a **full-stack software engineer** in the San Francisco Bay Area with **4+ years** building end-to-end web, mobile, and backend systems in Java/Spring, Python, and TypeScript — currently working in production GenAI: **multi-agent orchestration, RAG, LLM evals, and MCP servers**, held to real reliability bars.
 
+- 💼 Currently **GenAI Engineer at Presenter Prep** (Mountain View, CA) — LLM-as-Judge evals over Gemini native-audio responses, a retrieval-grounded chatbot with tool calling, and full-stack work on React/TypeScript with a serverless Cloudflare backend.
 - 🤖 Recently built **CodeSage** — a Claude-powered multi-agent PR reviewer on LangGraph (pgvector RAG · LLM-as-Judge evals · MCP server). Currently building **PolicyPal** — a RAG-powered insurance Q&A chatbot (React/TypeScript · FastAPI · pgvector · open-source Hugging Face models).
 - 🎓 **M.S. Computer Science**, Stevens Institute of Technology · **B.E. Computer Science**, Anna University.
 - 🧭 Open to **Software Engineer, Full-Stack, and GenAI Engineer roles**.

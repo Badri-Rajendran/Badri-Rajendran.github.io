@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Badri Rajendran — Full-Stack Software Engineer · GenAI: Agents, RAG &amp; Evals</title>
-<meta name="description" content="Badri Rajendran is a full-stack software engineer in the San Francisco Bay Area with 4+ years building end-to-end web, mobile, and backend systems — and recent production GenAI experience: LLM agents, RAG, and evals." />
+<meta name="description" content="Badri Rajendran is a full-stack software engineer in the San Francisco Bay Area with 4+ years building end-to-end web, mobile, and backend systems — currently a GenAI Engineer at Presenter Prep working on LLM agents, RAG, and evals." />
 <meta name="author" content="Badri Rajendran" />
 <link rel="canonical" href="https://badri-rajendran.github.io/" />
 <meta property="og:title" content="Badri Rajendran — Full-Stack Software Engineer · GenAI: Agents, RAG & Evals" />
@@ -18,7 +18,7 @@
   "@type": "Person",
   "name": "Badri Rajendran",
   "jobTitle": "Full-Stack Software Engineer",
-  "description": "Full-stack software engineer with 4+ years building end-to-end systems, with recent production GenAI experience — LLM agents, RAG, and evals.",
+  "description": "Full-stack software engineer with 4+ years building end-to-end systems; currently a GenAI Engineer at Presenter Prep working on LLM agents, RAG, and evals.",
   "url": "https://badri-rajendran.github.io/",
   "email": "mailto:badriathindran@gmail.com",
   "address": { "@type": "PostalAddress", "addressRegion": "CA", "addressCountry": "US" },
@@ -475,7 +475,7 @@ section{ position:relative; scroll-margin-top:90px; }
         </a>
       </div>
       <div class="hero__stats">
-        <div class="stat"><div class="v">4+ yrs</div><div class="k">SDE foundation<br>behind the AI</div></div>
+        <div class="stat"><div class="v">Now</div><div class="k">GenAI Engineer<br>@ Presenter Prep</div></div>
         <div class="stat"><div class="v">50%</div><div class="k">Faster doc parsing<br>with RAG</div></div>
         <div class="stat"><div class="v">40%</div><div class="k">Faster PR review<br>(CodeSage)</div></div>
         <div class="stat"><div class="v">99%+</div><div class="k">Uptime owned<br>in production</div></div>
@@ -494,7 +494,7 @@ section{ position:relative; scroll-margin-top:90px; }
         <div class="about__copy">
           <p class="reveal">I'm Badri — a full-stack software engineer in the San Francisco Bay Area, with <strong>4+ years</strong> building end-to-end web, mobile, and backend systems in Java, Python, and TypeScript. Recently I've been pulling generative AI out of the demo phase and into production: <span class="hl">multi-agent orchestration, retrieval-augmented generation, LLM evals, and MCP servers</span>, wired into customer-facing products and held to real reliability bars.</p>
           <p class="reveal d1">I care about the unglamorous parts — observability, cost tracking, test coverage, on-call — because that's the line between an AI feature that demos well and one people can lean on. I think in systems first: map the structure, stress-test it, then ship.</p>
-          <p class="reveal d2">I recently finished my <strong>M.S. in Computer Science</strong> at Stevens Institute of Technology, and I'm looking for Software Engineer, Full-Stack, and GenAI Engineer roles — teams building ambitious products where engineering rigor still matters.</p>
+          <p class="reveal d2">Today I'm a <strong>GenAI Engineer at Presenter Prep</strong> in Mountain View, building LLM-as-Judge evals and a retrieval-grounded chatbot on a React/TypeScript and serverless Cloudflare stack. I hold an <strong>M.S. in Computer Science</strong> from Stevens Institute of Technology, and I'm open to Software Engineer, Full-Stack, and GenAI Engineer roles — teams building ambitious products where engineering rigor still matters.</p>
         </div>
       </div>
       <div class="about__grid" style="margin-top:clamp(36px,5vw,60px);">
@@ -665,6 +665,15 @@ section{ position:relative; scroll-margin-top:90px; }
        { company, title, location, period, bullets:[ "html", ... ] }   */
     experience: [
       {
+        company: 'Presenter Prep', title: 'GenAI Engineer Intern',
+        location: 'Mountain View, CA', period: 'July 2026 — Present',
+        bullets: [
+          "Built an <b>LLM-as-Judge</b> eval harness that rates <b>Gemini 2.5 Flash</b> native-audio responses, making output quality measurable instead of anecdotal.",
+          "Engineering an end-to-end <b>RAG chatbot</b> — document retrieval, context assembly, and tool calling — so answers stay grounded in real source material.",
+          "Shipping full-stack features across a <b>React/TypeScript</b> frontend and a <b>serverless</b> backend deployed on <b>Cloudflare</b>."
+        ]
+      },
+      {
         company: 'Panasia Estate Inc.', title: 'GenAI Engineer Intern',
         location: 'New York, USA', period: 'Sept 2025 — Mar 2026',
         bullets: [
@@ -776,13 +785,13 @@ section{ position:relative; scroll-margin-top:90px; }
        { group, icon, items:[...] }                                     */
     skills: [
       { group:'Generative AI', icon:'spark', items:[
-        'Claude API','OpenAI API','LangChain','LangGraph','RAG','Multi-agent orchestration',
-        'MCP servers','Embeddings &amp; vector search','LLM evaluation','Prompt engineering','Fine-tuning','Hugging Face'] },
+        'Claude API','Gemini API','OpenAI API','LangChain','LangGraph','RAG','Multi-agent orchestration',
+        'MCP servers','Embeddings &amp; vector search','LLM-as-Judge evals','Tool calling','Prompt engineering','Fine-tuning','Hugging Face'] },
       { group:'Languages', icon:'code', items:['Java','Python','TypeScript','JavaScript','Kotlin','SQL','HTML','CSS'] },
       { group:'Frameworks', icon:'layers', items:['React','Redux','Node.js','Express','Spring Boot','FastAPI','Flask','Django','TailwindCSS','JUnit','PyTest','Selenium'] },
       { group:'Mobile', icon:'bolt', items:['Android (Kotlin)','React Native','Hybrid mobile apps','REST API integration'] },
       { group:'Data &amp; ML', icon:'box', items:['Pandas','NumPy','SciPy','scikit-learn','XGBoost','PyTorch','TensorFlow','Transformers','Matplotlib','Seaborn'] },
-      { group:'Cloud · AWS', icon:'cloud', items:['EC2','Lambda','S3','RDS','EKS','ECS','Fargate','API Gateway','CloudFormation','CloudWatch','SQS','SNS','IAM','VPC','Secrets Manager'] },
+      { group:'Cloud · AWS', icon:'cloud', items:['EC2','Lambda','S3','RDS','EKS','ECS','Fargate','API Gateway','CloudFormation','CloudWatch','SQS','SNS','IAM','VPC','Secrets Manager','Cloudflare','Serverless'] },
       { group:'Databases', icon:'db', items:['PostgreSQL','MySQL','MongoDB','DynamoDB','Redis','pgvector','SQLAlchemy'] },
       { group:'DevOps &amp; Tools', icon:'gear', items:['Docker','Kubernetes','Helm','Terraform','Jenkins','Ansible','GitHub Actions','GitLab CI/CD','Prometheus','Grafana','Git','Maven','Gradle','Postman','Linux (Ubuntu · Debian)','Bash','SSH'] },
       { group:'Architecture', icon:'shield', items:['Microservices','REST APIs','Distributed systems','Event-driven','System design','TDD','OAuth / JWT','DSA'] }
