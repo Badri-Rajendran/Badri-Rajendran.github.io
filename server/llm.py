@@ -3,13 +3,17 @@
 import json
 from collections.abc import Iterator
 
-from openai import OpenAI
+from openai import OpenAI, Timeout
 
 from config import SETTINGS
 from prompt import SYSTEM_PROMPT
 from validation import ApiError
 
 _client: OpenAI | None = None
+# A stalled attempt fails over quickly; the worst case (3 x 15 s plus backoff) stays under
+# the 60 s Cloud Run request timeout.
+_TIMEOUT = Timeout(15.0, connect=5.0)
+_MAX_RETRIES = 2
 
 
 class UpstreamError(Exception):
@@ -21,7 +25,7 @@ def _get_client() -> OpenAI:
     if not SETTINGS.openai_api_key:
         raise ApiError("unavailable", 503, "The assistant isn't available right now.")
     if _client is None:
-        _client = OpenAI(api_key=SETTINGS.openai_api_key, timeout=30, max_retries=1)
+        _client = OpenAI(api_key=SETTINGS.openai_api_key, timeout=_TIMEOUT, max_retries=_MAX_RETRIES)
     return _client
 
 
