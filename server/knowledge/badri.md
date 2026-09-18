@@ -8,7 +8,7 @@ Full-Stack Software Engineer in the San Francisco Bay Area with 4+ years buildin
 - I care about the unglamorous parts of AI features: observability, cost tracking, test coverage and on-call. That's the line between an AI feature that demos well and one people can lean on.
 - I think in systems first: map the structure, stress-test it, then ship.
 - What I'm good at: designing agentic systems that stay reliable, observable and cost-aware in production; full product lifecycle ownership, from API and schema design through CI/CD, deployment and on-call; bridging classic backend engineering (Java/Spring, Python) with modern GenAI tooling.
-- Right now: GenAI Engineer Intern at Presenter Prep, building PolicyPal, and going deep on LLM evaluation and agent observability at scale.
+- Right now: I'm a GenAI Engineer Intern at Presenter Prep, I'm building PolicyPal, and I'm going deep on LLM evaluation and agent observability at scale.
 
 ## Experience (most recent first)
 
