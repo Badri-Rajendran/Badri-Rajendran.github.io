@@ -2,7 +2,7 @@
 
 > **Reliable AI is an engineering problem. I build production LLM systems that treat it like one.**
 
-A personal portfolio for a **full-stack software engineer** with 4+ years building end-to-end systems — currently working in production **GenAI**: **LLM agents, RAG, and evals**. The whole page is built as a single, dependency-free `index.html` and renders like an *agent execution trace* — a gold SVG filament draws itself down the page as you scroll, a comet-head walks its leading edge, and each section ignites as a node in the graph. Over a living night-sky background, the cursor is replaced by a glowing star that trails stardust.
+A personal portfolio for a **full-stack software engineer** with 4+ years building end-to-end systems — currently working in production **GenAI**: **LLM agents, RAG, and evals**. The whole site is static files with zero dependencies and no build step, and the page renders like an *agent execution trace* — a gold SVG filament draws itself down the page as you scroll, a comet-head walks its leading edge, and each section ignites as a node in the graph. Over a living night-sky background, the cursor is replaced by a glowing star that trails stardust.
 
 <p align="center">
   <a href="https://badri-rajendran.github.io"><img alt="Live site" src="https://img.shields.io/badge/live-badri--rajendran.github.io-F2B043?style=flat-square&logo=github"></a>
@@ -26,7 +26,8 @@ A personal portfolio for a **full-stack software engineer** with 4+ years buildi
 - **A scroll-following SVG path** — a single filament is generated through anchor points with Catmull-Rom smoothing, drawn on scroll via `stroke-dashoffset`, with a traveling comet-head (`getPointAtLength`) and section nodes that activate as you arrive.
 - **A night-sky star-trail cursor** — the native cursor is hidden and replaced by an eased glowing star that trails gold stardust, chased by a small 5-star constellation with spring physics; background stars brighten and lean toward the pointer as it passes.
 - **Data-driven content** — every project, role, and skill lives in one `DATA` object. Adding a project is a one-object edit; no markup to touch.
-- **Zero build, zero dependencies** — one self-contained `index.html`. Drop it on any static host and it just works.
+- **Badri's AI** — a floating chat widget that answers questions about my career, projects, experience, and education, streamed from a small serverless endpoint so the OpenAI key never reaches the browser.
+- **Zero build, zero dependencies** — static files (`index.html` plus the widget in `assets/`). Drop them on any static host and they just work.
 - **Responsive & accessible** — fluid layouts, a mobile menu, `focus-visible` styles, and full `prefers-reduced-motion` support that disables the trail/animation and restores the native cursor.
 
 ---
@@ -48,6 +49,8 @@ As you scroll, a gold filament threads the page top to bottom, weaving left and 
 | Night sky & cursor | **Canvas 2D** + `requestAnimationFrame` | Smooth many-particle animation that SVG can't match at this density. |
 | Reveal & scroll-spy | **IntersectionObserver** | Cheap, jank-free section reveals and active-nav tracking. |
 | Type | Fraunces · Hanken Grotesk · JetBrains Mono | Editorial display, clean body, monospace "machine voice." |
+| Chat widget | **Vanilla JS** + `fetch` streaming (server-sent events) | Answers type out live; model output is rendered as text nodes, never HTML. |
+| Chat endpoint | **Python** Cloud Run function + **OpenAI Responses API** | Keeps the API key server-side; rate-limited and CORS-locked to this site. |
 | Hosting | **GitHub Pages** | Free static hosting, no pipeline. |
 
 ---
@@ -60,6 +63,23 @@ A few decisions worth calling out, since they're the interesting part:
 - **DPR-aware & paused when hidden.** Canvases scale to `devicePixelRatio` (capped at 2 for performance), particle counts are bounded, and the loop pauses on `visibilitychange` to avoid burning cycles in a backgrounded tab.
 - **The trace is rebuilt, not hard-coded.** The path is recomputed from live DOM positions on load, resize, and `document.fonts.ready`, so it stays aligned even as content reflows.
 - **Progressive enhancement.** The custom cursor is only enabled on fine-pointer devices and when motion is allowed — so touch users and anyone with reduced-motion preferences get a clean, fully-functional fallback.
+
+---
+
+## 🤖 Badri's AI
+
+A chat widget in the bottom-right corner answers visitors' questions about me, in my voice, with a clear note that it's an AI.
+
+```
+GitHub Pages (static)                       GCP Cloud Run function                        OpenAI
+index.html + assets/badri-ai.{js,css} ──POST──▶ CORS → validate → rate-limit ──▶ Responses API
+              ◀──── server-sent events ─────  system prompt from server/knowledge/*.md
+```
+
+- **Why a backend at all:** an API key used by the browser is public. The key lives in GCP Secret Manager; the site stays static.
+- **What it knows:** everything in `server/knowledge/badri.md` (public) and an optional git-ignored `private.md`. No RAG — it all fits in one cached system prompt.
+- **Guardrails:** per-IP and daily limits, message-size caps, code in messages rejected, answers grounded only in the provided facts.
+- **Local setup and tests:** see [`server/README.md`](server/README.md). Design notes: [`docs/badri-ai-chatbot-design.md`](docs/badri-ai-chatbot-design.md).
 
 ---
 
@@ -76,13 +96,13 @@ open index.html            # macOS  (use 'start' on Windows / 'xdg-open' on Linu
 python3 -m http.server 8000   # then visit http://localhost:8000
 ```
 
-No install step, no bundler, no `node_modules`.
+No install step, no bundler, no `node_modules`. To try the chat widget locally, also run the endpoint on port 8080 (see [`server/README.md`](server/README.md)) and open the site at `http://localhost:8000`.
 
 ---
 
 ## 🌐 Deploy to GitHub Pages
 
-1. Push `index.html` (plus `preview.png` and `BadriRajendran_Resume.pdf`) to the repo root.
+1. Push `index.html` and `assets/` (plus `preview.png` and `BadriRajendran_Resume.pdf`) to the repo root. `_config.yml` keeps `server/` and `docs/` off the published site.
 2. **Settings → Pages → Source:** deploy from `main`, folder `/ (root)`.
 3. If the repo is named `Badri-Rajendran.github.io`, it goes live at the root domain automatically:
 
@@ -110,14 +130,16 @@ All editable content lives in a single `DATA` object near the top of the inline 
 
 It renders automatically. Experience, skills, and social links are edited the same way in the same object — there's no other markup to update.
 
+> **Keep Badri's AI in sync:** the chatbot answers from `server/knowledge/badri.md`, not from `DATA`. When you change `DATA`, update that file too and redeploy the endpoint.
+
 ---
 
 ## 👋 About me
 
 I'm **Badri Rajendran**, a **full-stack software engineer** in the San Francisco Bay Area with **4+ years** building end-to-end web, mobile, and backend systems in Java/Spring, Python, and TypeScript — currently working in production GenAI: **multi-agent orchestration, RAG, LLM evals, and MCP servers**, held to real reliability bars.
 
-- 💼 Currently **GenAI Engineer at Presenter Prep** (Mountain View, CA) — LLM-as-Judge evals over Gemini native-audio responses, a retrieval-grounded chatbot with tool calling, and full-stack work on React/TypeScript with a serverless Cloudflare backend.
-- 🤖 Recently built **CodeSage** — a Claude-powered multi-agent PR reviewer on LangGraph (pgvector RAG · LLM-as-Judge evals · MCP server). Currently building **PolicyPal** — a RAG-powered insurance Q&A chatbot (React/TypeScript · FastAPI · pgvector · open-source Hugging Face models).
+- 💼 Currently **GenAI Engineer Intern at Presenter Prep** (Mountain View, CA) — LLM-as-Judge evals over Gemini native-audio responses, a retrieval-grounded chatbot with tool calling, and full-stack work on React/TypeScript with a serverless Cloudflare backend.
+- 🤖 Recently built **CodeSage** — a Claude-powered multi-agent PR reviewer on LangGraph (pgvector RAG · LLM-as-Judge evals · MCP server). Currently building **PolicyPal** — a RAG-powered insurance Q&A chatbot with cited answers (React · Flask · hybrid BM25 + pgvector retrieval · open-source Hugging Face embedding and reranking models).
 - 🎓 **M.S. Computer Science**, Stevens Institute of Technology · **B.E. Computer Science**, Anna University.
 - 🧭 Open to **Software Engineer, Full-Stack, and GenAI Engineer roles**.
 
