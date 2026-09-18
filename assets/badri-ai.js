@@ -17,6 +17,10 @@
   var EMAIL = 'badriathindran@gmail.com';
   var MAX_HISTORY = 16;
   var MAX_CHARS = 1000;
+  var WAKE_LIMIT_MS = 60000;   // keep retrying a failed connection this long (Cloud Run cold start)
+  var RETRY_DELAY_MS = 3000;
+  var CUT_OFF = 'The answer was cut off. Please try again.';
+  var WAKING = 'Waking up — the first answer can take up to a minute…';
   var GREETING = "Hi, I'm Badri's AI 👋 Ask me about my experience, projects, skills, or education.";
   var SUGGESTIONS = [
     'What are you working on now?',
@@ -39,9 +43,12 @@
 
   var history = [];        // [{ role, content }] sent to the server
   var controller = null;   // AbortController while a reply streams
-  var warmedUp = false;
   var frame = 0, pending = null;
   var ui = buildUI();
+
+  // Wake a scaled-to-zero instance once, when the page loads; a cold start takes ~40 s.
+  // No repeat pings, so an idle tab never keeps the service awake.
+  fetch(ENDPOINT, { method: 'GET' }).catch(function () {});
 
   /* =================================================================
      1) DOM
@@ -119,10 +126,6 @@
     document.documentElement.classList.toggle('bai-locked', modal);
     if (modal) fitViewport();
     ui.input.focus();
-    if (!warmedUp) {  // wake a scaled-to-zero instance before the first question
-      warmedUp = true;
-      fetch(ENDPOINT, { method: 'GET' }).catch(function () {});
-    }
   }
 
   function closePanel() {
@@ -175,6 +178,8 @@
     streamChat(history.slice(-MAX_HISTORY), controller.signal, function (delta) {
       answer += delta;
       scheduleRender(bubble, answer);
+    }, function () {
+      renderNow(bubble, '', WAKING);
     }).then(function (finish) {
       history.push({ role: 'assistant', content: answer });
       renderNow(bubble, answer, finish === 'length' ? '(answer trimmed for length)' : '');
@@ -209,15 +214,8 @@
   /* =================================================================
      4) STREAMING  (POST → server-sent events via fetch)
      ================================================================= */
-  function streamChat(messages, signal, onDelta) {
-    return fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: messages }),
-      signal: signal
-    }).catch(function (err) {
-      throw err.name === 'AbortError' ? err : new Error(connectionError());
-    }).then(function (res) {
+  function streamChat(messages, signal, onDelta, onWaking) {
+    return connect(messages, signal, Date.now() + WAKE_LIMIT_MS, onWaking).then(function (res) {
       if (res.ok) return readEvents(res.body, onDelta);
       return res.json().catch(function () { return null; }).then(function (body) {
         var message = (body && body.error && body.error.message) || connectionError();
@@ -228,12 +226,42 @@
     });
   }
 
+  // A cold start makes Cloud Run reject requests without CORS headers, so fetch fails
+  // outright; retry until the instance is up. Our own errors arrive as responses instead.
+  function connect(messages, signal, deadline, onWaking) {
+    return fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: messages }),
+      signal: signal
+    }).catch(function (err) {
+      if (err.name === 'AbortError') throw err;
+      if (Date.now() + RETRY_DELAY_MS > deadline) throw new Error(connectionError());
+      if (onWaking) { onWaking(); onWaking = null; }
+      return wait(RETRY_DELAY_MS, signal).then(function () {
+        return connect(messages, signal, deadline, null);
+      });
+    });
+  }
+
+  function wait(ms, signal) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(resolve, ms);
+      signal.addEventListener('abort', function () {
+        clearTimeout(timer);
+        reject(new DOMException('Aborted', 'AbortError'));
+      }, { once: true });
+    });
+  }
+
   function readEvents(body, onDelta) {
     var reader = body.pipeThrough(new TextDecoderStream()).getReader();
     var buffer = '';
     function pump() {
-      return reader.read().then(function (chunk) {
-        if (chunk.done) throw new Error('The answer was cut off. Please try again.');
+      return reader.read().catch(function (err) {
+        throw err.name === 'AbortError' ? err : new Error(CUT_OFF);  // e.g. "network error"
+      }).then(function (chunk) {
+        if (chunk.done) throw new Error(CUT_OFF);
         buffer += chunk.value;
         var end;
         while ((end = buffer.indexOf('\n\n')) !== -1) {
