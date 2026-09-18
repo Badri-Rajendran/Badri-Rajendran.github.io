@@ -19,6 +19,7 @@
   var MAX_CHARS = 1000;
   var WAKE_LIMIT_MS = 60000;   // keep retrying a failed connection this long (Cloud Run cold start)
   var RETRY_DELAY_MS = 3000;
+  var WAKE_AFTER_MS = 5 * 60 * 1000;   // skip the wake-up ping if we reached the service this recently
   var CUT_OFF = 'The answer was cut off. Please try again.';
   var WAKING = 'Waking up — the first answer can take up to a minute…';
   var GREETING = "Hi, I'm Badri's AI 👋 Ask me about my experience, projects, skills, or education.";
@@ -44,11 +45,15 @@
   var history = [];        // [{ role, content }] sent to the server
   var controller = null;   // AbortController while a reply streams
   var frame = 0, pending = null;
+  var lastContact = 0;     // when we last reached (or tried to reach) the service
   var ui = buildUI();
 
-  // Wake a scaled-to-zero instance once, when the page loads; a cold start takes ~40 s.
-  // No repeat pings, so an idle tab never keeps the service awake.
-  fetch(ENDPOINT, { method: 'GET' }).catch(function () {});
+  // A cold start takes ~40 s, so wake the service when a visitor arrives, returns to the tab
+  // or opens the chat. No timers: an idle or hidden tab never keeps the service awake.
+  wake();
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) wake();
+  });
 
   /* =================================================================
      1) DOM
@@ -126,6 +131,13 @@
     document.documentElement.classList.toggle('bai-locked', modal);
     if (modal) fitViewport();
     ui.input.focus();
+    wake();
+  }
+
+  function wake() {
+    if (Date.now() - lastContact < WAKE_AFTER_MS) return;
+    lastContact = Date.now();
+    fetch(ENDPOINT, { method: 'GET' }).catch(function () {});
   }
 
   function closePanel() {
@@ -229,6 +241,7 @@
   // A cold start makes Cloud Run reject requests without CORS headers, so fetch fails
   // outright; retry until the instance is up. Our own errors arrive as responses instead.
   function connect(messages, signal, deadline, onWaking) {
+    lastContact = Date.now();
     return fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
