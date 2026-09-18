@@ -1,0 +1,4 @@
+# GitHub Pages: keep backend source, knowledge files and docs off the published site.
+exclude:
+  - server
+  - docs
