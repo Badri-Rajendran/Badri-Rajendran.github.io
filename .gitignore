@@ -1,1 +1,7 @@
 .claude/
+server/knowledge/private.md
+.venv/
+__pycache__/
+.pytest_cache/
+server/DEPLOY.md
+server/env.yaml

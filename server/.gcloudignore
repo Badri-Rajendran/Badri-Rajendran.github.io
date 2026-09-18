@@ -1,0 +1,11 @@
+# Uploaded to Cloud Build on deploy. knowledge/private.md must stay included.
+.gcloudignore
+.venv/
+__pycache__/
+.pytest_cache/
+tests/
+pytest.ini
+requirements-dev.txt
+README.md
+DEPLOY.md
+env.yaml
