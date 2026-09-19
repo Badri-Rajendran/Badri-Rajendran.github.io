@@ -478,7 +478,7 @@ section{ position:relative; scroll-margin-top:90px; }
       <div class="hero__stats">
         <div class="stat"><div class="v">Now</div><div class="k">GenAI Engineer Intern<br>@ Presenter Prep</div></div>
         <div class="stat"><div class="v">50%</div><div class="k">Faster doc parsing<br>with RAG</div></div>
-        <div class="stat"><div class="v">40%</div><div class="k">Faster PR review<br>(CodeSage)</div></div>
+        <div class="stat"><div class="v">30</div><div class="k">States with live plan<br>pricing (PolicyPal)</div></div>
         <div class="stat"><div class="v">99%+</div><div class="k">Uptime owned<br>in production</div></div>
       </div>
     </div>
@@ -500,7 +500,7 @@ section{ position:relative; scroll-margin-top:90px; }
       </div>
       <div class="about__grid" style="margin-top:clamp(36px,5vw,60px);">
         <div class="about__side reveal d1">
-          <p class="about__note"><span class="c">//</span> thinks in systems,<br><span class="c">//</span> ships in production.<br><br>Currently building <b>PolicyPal</b> — a hybrid-RAG insurance Q&amp;A chatbot with cited answers — and going deep on LLM evaluation &amp; agent observability at scale.</p>
+          <p class="about__note"><span class="c">//</span> thinks in systems,<br><span class="c">//</span> ships in production.<br><br>Currently building <b>PolicyPal</b> — a cited-answer RAG assistant for US health coverage, now adding ACA plan comparison — and going deep on LLM evaluation &amp; agent observability at scale.</p>
         </div>
         <div class="about__copy">
           <div class="about__card reveal d2">
@@ -536,7 +536,7 @@ section{ position:relative; scroll-margin-top:90px; }
       <div class="work__head">
         <p class="eyebrow reveal"><span class="ln"></span><span class="num">03</span> artifacts</p>
         <h2 class="section-title reveal">Things I've <em>built</em>.</h2>
-        <p class="lead reveal d1">From a flagship multi-agent reviewer to civic-data ML — selected work, with source where it's public.</p>
+        <p class="lead reveal d1">From a flagship grounded-RAG assistant to civic-data ML — selected work, with source where it's public.</p>
       </div>
       <div id="flagshipMount"><!-- rendered from DATA.projects.flagship --></div>
       <div class="work__grid" id="workGrid"><!-- rendered from DATA.projects.others --></div>
@@ -740,24 +740,25 @@ section{ position:relative; scroll-margin-top:90px; }
        To add a project: copy a block, change the fields, done.            */
     projects: {
       flagship: {
-        title: 'CodeSage', subtitle: 'Agentic Code Review Assistant', date: 'Mar 2026',
-        blurb: "A Claude-powered multi-agent system that reviews pull requests the way a senior team would — reasoning, reflecting, and citing context from the codebase before it comments.",
+        title: 'PolicyPal', subtitle: 'Grounded RAG insurance assistant', date: 'in progress',
+        blurb: "A RAG assistant that answers insurance questions from a curated Wikipedia + HealthCare.gov corpus. Every claim cites its source, and anything it can't ground is refused, not guessed.",
         bullets: [
-          "Multi-agent PR review on <b>LangGraph</b> (ReAct + self-reflection), cutting review turnaround <span class='num'>~40%</span>.",
-          "A <b>pgvector RAG</b> pipeline on PostgreSQL + an <b>LLM-as-Judge</b> eval harness with cross-version regression detection.",
-          "Parallel security, correctness &amp; style reviewer agents with sandboxed tests and human-in-the-loop gates.",
-          "Containerized on AWS (Lambda + ECS) with token-cost telemetry; agents exposed over <b>REST</b> and an <b>MCP server</b>."
+          "<b>Hybrid retrieval</b> — BM25 + pgvector, cross-encoder reranked and relevance-gated, on local open-source Hugging Face models; only generation is hosted (OpenAI).",
+          "<b>Eval-driven</b> — retrieval and generation evals with regression floors; adding HealthCare.gov cut unanswered test questions from <span class='num'>12/20</span> to <span class='num'>4/20</span>, and advice-shaped questions are refused by design.",
+          "Production guardrails — JWT auth with per-user thread isolation, a per-user daily token budget, and CI with SAST, dependency audits, secret scanning and an <span class='num'>85%</span> coverage floor; decisions recorded in 11 ADRs.",
+          "In progress: <b>ACA Marketplace plan comparison</b> by ZIP and age via a <b>tool call</b>, priced live from CMS for <span class='num'>30</span> states — it compares plans, never recommends one."
         ],
-        tags: ['Python','FastAPI','LangGraph','LangChain','Claude API','pgvector','PostgreSQL','MCP','AWS','Docker'],
-        links: [ { label:'View on GitHub', url:'https://github.com/Badri-Rajendran/CodeSage', kind:'github' } ]
+        tags: ['Python','Flask','React 19','PostgreSQL','pgvector','Hybrid RAG','sentence-transformers','OpenAI','Tool calling'],
+        nodes: ['query','bm25','vector','cite'],   // labels for the four nodes in the flagship illustration (top, left, right, bottom)
+        links: [ { label:'View on GitHub', url:'https://github.com/Badri-Rajendran/PolicyPal', kind:'github' } ]
       },
       others: [
         {
-          title: 'PolicyPal', subtitle: 'RAG insurance Q&amp;A · in progress',
-          blurb: "A chatbot that answers insurance questions from a curated knowledge base with <b>cited sources</b> — <b>hybrid BM25 + pgvector</b> retrieval, cross-encoder reranking, and local open-source embedding models — refusing anything it can't ground.",
-          tags: ['Flask','React','pgvector','Hybrid RAG','Hugging Face','OpenAI'],
-          lang: { name:'Python', color:'#3572A5' }, icon: 'shield',
-          links: [ { label:'Source', url:'https://github.com/Badri-Rajendran/PolicyPal', kind:'github' } ]
+          title: 'CodeSage', subtitle: 'Agentic code review assistant · Mar 2026',
+          blurb: "A Claude-powered multi-agent system that reviews pull requests the way a senior team would — <b>LangGraph</b> agents that reason, reflect and cite codebase context, cutting review turnaround <span class='num'>~40%</span>, with an <b>LLM-as-Judge</b> eval harness and an <b>MCP server</b>.",
+          tags: ['LangGraph','Claude API','pgvector','MCP','FastAPI','AWS'],
+          lang: { name:'Python', color:'#3572A5' }, icon: 'code',
+          links: [ { label:'Source', url:'https://github.com/Badri-Rajendran/CodeSage', kind:'github' } ]
         },
         {
           title: 'Trueup', subtitle: 'Regulated retail-investing platform',
@@ -886,8 +887,8 @@ section{ position:relative; scroll-margin-top:90px; }
     }).join('');
   }
 
-  /* a small bespoke "multi-agent graph" illustration for the flagship */
-  function flagshipArt(){
+  /* a small bespoke graph illustration for the flagship; node labels come from DATA.projects.flagship.nodes */
+  function flagshipArt(nodes){
     return ''+
     '<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">'+
       '<defs><radialGradient id="fgGlow" cx="50%" cy="50%" r="50%">'+
@@ -902,13 +903,13 @@ section{ position:relative; scroll-margin-top:90px; }
         '<circle r="2.6" fill="#FFD27A"><animateMotion dur="4.2s" repeatCount="indefinite" path="M150 60 L220 150"/></circle>' )+
       '<g>'+
         '<circle cx="150" cy="60" r="22" fill="#151C28" stroke="#F2B043" stroke-width="1.6"/>'+
-        '<text x="150" y="64" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#FFD27A">orch</text>'+
+        '<text x="150" y="64" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#FFD27A">'+nodes[0]+'</text>'+
         '<circle cx="80" cy="150" r="20" fill="#151C28" stroke="#5FE3C6" stroke-width="1.4"/>'+
-        '<text x="80" y="154" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#A6F2E1">sec</text>'+
+        '<text x="80" y="154" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#A6F2E1">'+nodes[1]+'</text>'+
         '<circle cx="220" cy="150" r="20" fill="#151C28" stroke="#5FE3C6" stroke-width="1.4"/>'+
-        '<text x="220" y="154" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#A6F2E1">style</text>'+
+        '<text x="220" y="154" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#A6F2E1">'+nodes[2]+'</text>'+
         '<circle cx="150" cy="240" r="22" fill="#151C28" stroke="#F2B043" stroke-width="1.6"/>'+
-        '<text x="150" y="244" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#FFD27A">judge</text>'+
+        '<text x="150" y="244" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#FFD27A">'+nodes[3]+'</text>'+
       '</g>'+
     '</svg>';
   }
@@ -937,7 +938,7 @@ section{ position:relative; scroll-margin-top:90px; }
           '<div class="taglist">'+tags+'</div>'+
           '<div class="proj-links">'+links+'</div>'+
         '</div>'+
-        '<div class="flagship__art" aria-hidden="true">'+flagshipArt()+'</div>'+
+        '<div class="flagship__art" aria-hidden="true">'+flagshipArt(f.nodes)+'</div>'+
       '</div>'+
     '</article>';
   }

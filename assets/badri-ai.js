@@ -25,7 +25,7 @@
   var GREETING = "Hi, I'm Badri's AI 👋 Ask me about my experience, projects, skills, or education.";
   var SUGGESTIONS = [
     'What are you working on now?',
-    'Tell me about CodeSage',
+    'Tell me about PolicyPal',
     "What's your GenAI experience?",
     'How can I contact you?'
   ];
