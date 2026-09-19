@@ -17,6 +17,11 @@
   var EMAIL = 'badriathindran@gmail.com';
   var MAX_HISTORY = 16;
   var MAX_CHARS = 1000;
+  var WAKE_LIMIT_MS = 60000;   // keep retrying a failed connection this long (Cloud Run cold start)
+  var RETRY_DELAY_MS = 3000;
+  var WAKE_AFTER_MS = 5 * 60 * 1000;   // skip the wake-up ping if we reached the service this recently
+  var CUT_OFF = 'The answer was cut off. Please try again.';
+  var WAKING = 'Waking up — the first answer can take up to a minute…';
   var GREETING = "Hi, I'm Badri's AI 👋 Ask me about my experience, projects, skills, or education.";
   var SUGGESTIONS = [
     'What are you working on now?',
@@ -39,9 +44,16 @@
 
   var history = [];        // [{ role, content }] sent to the server
   var controller = null;   // AbortController while a reply streams
-  var warmedUp = false;
   var frame = 0, pending = null;
+  var lastContact = 0;     // when we last reached (or tried to reach) the service
   var ui = buildUI();
+
+  // A cold start takes ~40 s, so wake the service when a visitor arrives, returns to the tab
+  // or opens the chat. No timers: an idle or hidden tab never keeps the service awake.
+  wake();
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) wake();
+  });
 
   /* =================================================================
      1) DOM
@@ -73,7 +85,7 @@
     ]);
     var status = h('div', { 'class': 'bai-sr', 'aria-live': 'polite' });
     var panel = h('section', { id: 'bai-panel', 'class': 'bai-panel', role: 'dialog', 'aria-modal': 'false',
-      'aria-labelledby': 'bai-title', hidden: '' }, [
+      'aria-labelledby': 'bai-title', tabindex: '-1', hidden: '' }, [
       h('header', { 'class': 'bai-head' }, [
         h('span', { 'class': 'bai-head__dot', 'aria-hidden': 'true' }),
         h('div', { 'class': 'bai-head__text' }, [
@@ -118,11 +130,14 @@
     ui.launcher.setAttribute('aria-expanded', 'true');
     document.documentElement.classList.toggle('bai-locked', modal);
     if (modal) fitViewport();
-    ui.input.focus();
-    if (!warmedUp) {  // wake a scaled-to-zero instance before the first question
-      warmedUp = true;
-      fetch(ENDPOINT, { method: 'GET' }).catch(function () {});
-    }
+    (ui.input.disabled ? ui.panel : ui.input).focus();
+    wake();
+  }
+
+  function wake() {
+    if (Date.now() - lastContact < WAKE_AFTER_MS) return;
+    lastContact = Date.now();
+    fetch(ENDPOINT, { method: 'GET' }).catch(function () {});
   }
 
   function closePanel() {
@@ -136,7 +151,7 @@
     if (e.key === 'Escape') { e.preventDefault(); closePanel(); return; }
     if (e.key !== 'Tab' || ui.panel.getAttribute('aria-modal') !== 'true') return;
     // mobile sheet is modal: keep focus inside it
-    var focusable = ui.panel.querySelectorAll('button:not([disabled]), textarea, a[href]');
+    var focusable = ui.panel.querySelectorAll('button:not([disabled]), textarea:not([disabled]), a[href]');
     var first = focusable[0], last = focusable[focusable.length - 1];
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
@@ -175,6 +190,8 @@
     streamChat(history.slice(-MAX_HISTORY), controller.signal, function (delta) {
       answer += delta;
       scheduleRender(bubble, answer);
+    }, function () {
+      renderNow(bubble, '', WAKING);
     }).then(function (finish) {
       history.push({ role: 'assistant', content: answer });
       renderNow(bubble, answer, finish === 'length' ? '(answer trimmed for length)' : '');
@@ -194,10 +211,17 @@
     });
   }
 
+  // The input is disabled while a reply is busy, so park keyboard focus on the panel (typing
+  // and Space do nothing there; Escape still closes it) and hand it back to the input after.
   function setBusy(busy) {
+    var active = document.activeElement;
+    var refocus = busy ? (ui.panel.contains(active) || active === document.body)  // body: a clicked chip was hidden
+                       : (active === ui.panel || active === ui.send);
     controller = busy ? new AbortController() : null;
+    ui.input.disabled = busy;
     ui.send.classList.toggle('is-busy', busy);
     ui.send.setAttribute('aria-label', busy ? 'Stop' : 'Send');
+    if (refocus) (busy ? ui.panel : ui.input).focus();
   }
 
   function announce(text) { ui.status.textContent = text; }
@@ -209,15 +233,8 @@
   /* =================================================================
      4) STREAMING  (POST → server-sent events via fetch)
      ================================================================= */
-  function streamChat(messages, signal, onDelta) {
-    return fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: messages }),
-      signal: signal
-    }).catch(function (err) {
-      throw err.name === 'AbortError' ? err : new Error(connectionError());
-    }).then(function (res) {
+  function streamChat(messages, signal, onDelta, onWaking) {
+    return connect(messages, signal, Date.now() + WAKE_LIMIT_MS, onWaking).then(function (res) {
       if (res.ok) return readEvents(res.body, onDelta);
       return res.json().catch(function () { return null; }).then(function (body) {
         var message = (body && body.error && body.error.message) || connectionError();
@@ -228,12 +245,43 @@
     });
   }
 
+  // A cold start makes Cloud Run reject requests without CORS headers, so fetch fails
+  // outright; retry until the instance is up. Our own errors arrive as responses instead.
+  function connect(messages, signal, deadline, onWaking) {
+    lastContact = Date.now();
+    return fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: messages }),
+      signal: signal
+    }).catch(function (err) {
+      if (err.name === 'AbortError') throw err;
+      if (Date.now() + RETRY_DELAY_MS > deadline) throw new Error(connectionError());
+      if (onWaking) { onWaking(); onWaking = null; }
+      return wait(RETRY_DELAY_MS, signal).then(function () {
+        return connect(messages, signal, deadline, null);
+      });
+    });
+  }
+
+  function wait(ms, signal) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(resolve, ms);
+      signal.addEventListener('abort', function () {
+        clearTimeout(timer);
+        reject(new DOMException('Aborted', 'AbortError'));
+      }, { once: true });
+    });
+  }
+
   function readEvents(body, onDelta) {
     var reader = body.pipeThrough(new TextDecoderStream()).getReader();
     var buffer = '';
     function pump() {
-      return reader.read().then(function (chunk) {
-        if (chunk.done) throw new Error('The answer was cut off. Please try again.');
+      return reader.read().catch(function (err) {
+        throw err.name === 'AbortError' ? err : new Error(CUT_OFF);  // e.g. "network error"
+      }).then(function (chunk) {
+        if (chunk.done) throw new Error(CUT_OFF);
         buffer += chunk.value;
         var end;
         while ((end = buffer.indexOf('\n\n')) !== -1) {

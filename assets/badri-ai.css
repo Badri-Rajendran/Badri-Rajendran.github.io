@@ -32,6 +32,7 @@ body.menu-open .bai-launcher{ display:none; }
   animation:bai-in .32s var(--ease);
 }
 .bai-panel[hidden]{ display:none; }
+.bai-panel:focus{ outline:none; }
 @keyframes bai-in{ from{ opacity:0; transform:translateY(14px) scale(0.98); } to{ opacity:1; transform:none; } }
 
 .bai-head{ display:flex; align-items:flex-start; gap:12px; padding:18px 18px 14px; border-bottom:1px solid var(--line-2); }
@@ -70,6 +71,7 @@ body.menu-open .bai-launcher{ display:none; }
   border:1px solid var(--line); background:var(--ink-2); color:var(--text); font:inherit; font-size:0.9rem; line-height:1.5; }
 .bai-input::placeholder{ color:var(--text-4); }
 .bai-input:focus{ outline:none; border-color:var(--gold-deep); box-shadow:0 0 0 3px rgba(242,176,67,0.12); }
+.bai-input:disabled{ opacity:.55; cursor:not-allowed; }
 .bai-send{ flex:none; width:42px; height:42px; border-radius:12px; border:0; display:flex; align-items:center; justify-content:center;
   background:linear-gradient(180deg,var(--gold),var(--gold-deep)); color:#1a1205; transition:transform .2s var(--ease),opacity .2s; }
 .bai-send:hover{ transform:translateY(-1px); }
@@ -80,7 +82,7 @@ body.menu-open .bai-launcher{ display:none; }
 .bai-send.is-busy .bai-icon-stop{ display:block; }
 
 /* keep a text caret in the input while the site's star cursor hides the native one */
-body.cursor-custom .bai-panel textarea{ cursor:text !important; }
+body.cursor-custom .bai-panel textarea:not(:disabled){ cursor:text !important; }
 
 /* --- mobile: full-screen sheet --- */
 @media (max-width:560px){
