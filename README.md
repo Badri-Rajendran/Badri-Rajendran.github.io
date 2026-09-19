@@ -139,7 +139,7 @@ It renders automatically. Experience, skills, and social links are edited the sa
 I'm **Badri Rajendran**, a **full-stack software engineer** in the San Francisco Bay Area with **4+ years** building end-to-end web, mobile, and backend systems in Java/Spring, Python, and TypeScript — currently working in production GenAI: **multi-agent orchestration, RAG, LLM evals, and MCP servers**, held to real reliability bars.
 
 - 💼 Currently **GenAI Engineer Intern at Presenter Prep** (Mountain View, CA) — LLM-as-Judge evals over Gemini native-audio responses, a retrieval-grounded chatbot with tool calling, and full-stack work on React/TypeScript with a serverless Cloudflare backend.
-- 🤖 Recently built **CodeSage** — a Claude-powered multi-agent PR reviewer on LangGraph (pgvector RAG · LLM-as-Judge evals · MCP server). Currently building **PolicyPal** — a RAG-powered insurance Q&A chatbot with cited answers (React · Flask · hybrid BM25 + pgvector retrieval · open-source Hugging Face embedding and reranking models).
+- 🤖 Flagship: **PolicyPal** — a grounded RAG assistant for insurance questions with cited answers (React · Flask · hybrid BM25 + pgvector retrieval · open-source Hugging Face embedding and reranking models · evals with regression floors), now adding ACA Marketplace plan comparison. Also built **CodeSage** — a Claude-powered multi-agent PR reviewer on LangGraph (pgvector RAG · LLM-as-Judge evals · MCP server).
 - 🎓 **M.S. Computer Science**, Stevens Institute of Technology · **B.E. Computer Science**, Anna University.
 - 🧭 Open to **Software Engineer, Full-Stack, and GenAI Engineer roles**.
 
