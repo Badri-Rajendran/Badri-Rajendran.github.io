@@ -85,7 +85,7 @@
     ]);
     var status = h('div', { 'class': 'bai-sr', 'aria-live': 'polite' });
     var panel = h('section', { id: 'bai-panel', 'class': 'bai-panel', role: 'dialog', 'aria-modal': 'false',
-      'aria-labelledby': 'bai-title', hidden: '' }, [
+      'aria-labelledby': 'bai-title', tabindex: '-1', hidden: '' }, [
       h('header', { 'class': 'bai-head' }, [
         h('span', { 'class': 'bai-head__dot', 'aria-hidden': 'true' }),
         h('div', { 'class': 'bai-head__text' }, [
@@ -130,7 +130,7 @@
     ui.launcher.setAttribute('aria-expanded', 'true');
     document.documentElement.classList.toggle('bai-locked', modal);
     if (modal) fitViewport();
-    ui.input.focus();
+    (ui.input.disabled ? ui.panel : ui.input).focus();
     wake();
   }
 
@@ -151,7 +151,7 @@
     if (e.key === 'Escape') { e.preventDefault(); closePanel(); return; }
     if (e.key !== 'Tab' || ui.panel.getAttribute('aria-modal') !== 'true') return;
     // mobile sheet is modal: keep focus inside it
-    var focusable = ui.panel.querySelectorAll('button:not([disabled]), textarea, a[href]');
+    var focusable = ui.panel.querySelectorAll('button:not([disabled]), textarea:not([disabled]), a[href]');
     var first = focusable[0], last = focusable[focusable.length - 1];
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
@@ -211,10 +211,17 @@
     });
   }
 
+  // The input is disabled while a reply is busy, so park keyboard focus on the panel (typing
+  // and Space do nothing there; Escape still closes it) and hand it back to the input after.
   function setBusy(busy) {
+    var active = document.activeElement;
+    var refocus = busy ? (ui.panel.contains(active) || active === document.body)  // body: a clicked chip was hidden
+                       : (active === ui.panel || active === ui.send);
     controller = busy ? new AbortController() : null;
+    ui.input.disabled = busy;
     ui.send.classList.toggle('is-busy', busy);
     ui.send.setAttribute('aria-label', busy ? 'Stop' : 'Send');
+    if (refocus) (busy ? ui.panel : ui.input).focus();
   }
 
   function announce(text) { ui.status.textContent = text; }
