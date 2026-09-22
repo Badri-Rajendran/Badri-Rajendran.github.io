@@ -1,7 +1,9 @@
 /* =====================================================================
-   BADRI'S AI — floating chat widget (see assets/badri-ai.js)
-   Uses the site's :root tokens from index.html. The site's global
-   prefers-reduced-motion rule also covers these animations.
+   BADRI'S AI — chat widget (see assets/badri-ai.js)
+   Uses the site's :root tokens from index.html, including --rail, which
+   index.html defines and which reserves the column this panel docks into
+   at 1360px and up. The site's global prefers-reduced-motion rule also
+   covers these animations.
    ===================================================================== */
 
 .bai-sr{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
@@ -89,4 +91,25 @@ body.cursor-custom .bai-panel textarea:not(:disabled){ cursor:text !important; }
   .bai-panel{ inset:0; width:100%; height:var(--bai-vh,100dvh); max-height:none; border-radius:0; border:0; }
   .bai-input{ font-size:16px; } /* prevents iOS zoom on focus */
   html.bai-locked, html.bai-locked body{ overflow:hidden; }
+}
+
+/* --- desktop: docked as a full-height sidebar ---
+   Matches the --rail breakpoint in index.html. Keep the two in step. */
+@media (min-width:1360px){
+  html.bai-rail-open .bai-panel{
+    top:0; right:0; bottom:0; left:auto;
+    width:var(--rail); height:auto; max-height:none;
+    border:0; border-left:1px solid var(--line); border-radius:0;
+    box-shadow:none;          /* an edge panel would bleed a halo onto the content */
+    animation:none;           /* the rail doesn't fly in; the layout snaps */
+  }
+  /* the floating panel contains its scroll; a permanent full-height rail
+     must not, or the wheel goes dead over a fifth of the screen */
+  html.bai-rail-open .bai-log{ overscroll-behavior:auto; }
+  html.bai-rail-open .bai-launcher{ display:none; }
+}
+
+@media print{
+  .bai-panel,.bai-launcher{ display:none !important; }
+  html{ --rail:0px; }
 }

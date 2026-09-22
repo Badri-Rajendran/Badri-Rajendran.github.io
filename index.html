@@ -1218,6 +1218,9 @@ section{ position:relative; scroll-margin-top:90px; }
 
     window.addEventListener('scroll', onScroll, { passive:true });
     window.addEventListener('resize', onResize);
+    // docking or undocking the chat sidebar changes the content width without
+    // firing a window resize, so the filament has to be rebuilt for it too
+    window.addEventListener('bai:layout', onResize);
     build();
     window.addEventListener('load', function(){ setTimeout(build, 300); });
     if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ setTimeout(build, 60); }); }

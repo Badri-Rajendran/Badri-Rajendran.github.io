@@ -33,7 +33,9 @@
   // **bold** | [text](url) | https://url | email | +phone
   var TOKEN = /\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\(([^)\s]+)\)|(https:\/\/[^\s<>()]*[^\s<>().,;:!?'"])|([\w.+-]+@[\w-]+(?:\.[\w-]+)+)|(\+\d[\d ().-]{7,}\d)/g;
   var mobile = window.matchMedia('(max-width:560px)');
+  var desktop = window.matchMedia('(min-width:1360px)');   // must match the --rail breakpoint in index.html
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var DISMISS_KEY = 'bai-rail-dismissed';
 
   var ICONS = {
     star: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.6 6.3L21 9l-4.8 4.3L17.6 21 12 17.3 6.4 21l1.4-7.7L3 9l6.4-.7z"/></svg>',
@@ -54,6 +56,26 @@
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden) wake();
   });
+
+  // On a wide screen the chat is docked open on arrival. Never steal focus for it.
+  // This runs after the capability check above, so a page that can't chat never
+  // reserves an empty column.
+  if (desktop.matches && !dismissed()) open({ focus: false });
+
+  // Crossing a breakpoint with the panel open has to re-shape it: docked sidebar
+  // above 1360, floating panel between, modal sheet below 560.
+  listen(desktop, function () {
+    if (ui.panel.hidden) return;
+    setModality();
+    setRail(desktop.matches);
+  });
+  listen(mobile, function () {
+    if (!ui.panel.hidden) setModality();   // otherwise aria-modal sticks and the focus trap stays armed
+  });
+  function listen(mq, fn) {
+    if (mq.addEventListener) mq.addEventListener('change', fn);
+    else if (mq.addListener) mq.addListener(fn);
+  }
 
   /* =================================================================
      1) DOM
@@ -123,14 +145,37 @@
   /* =================================================================
      2) OPEN / CLOSE / KEYBOARD
      ================================================================= */
-  function open() {
-    var modal = mobile.matches;
-    ui.panel.hidden = false;
+  // Dock the panel as a full-height sidebar (or undock it). The class on <html>
+  // is what reserves the column via --rail, so the page reflows with it.
+  function setRail(on) {
+    var stuck = nearBottom(ui.log);
+    document.documentElement.classList.toggle('bai-rail-open', on);
+    // A sidebar the visitor never opened shouldn't announce itself as a dialog.
+    ui.panel.setAttribute('role', on ? 'complementary' : 'dialog');
+    if (on) ui.panel.setAttribute('aria-modal', 'false');
+    autoGrow();                            // the textarea's inline height is width-dependent
+    if (stuck) scrollToBottom(ui.log, false);
+    // the page's scroll trace and nav are sized from content width, and a rail
+    // toggle changes it without firing a window resize
+    window.dispatchEvent(new CustomEvent('bai:layout'));
+  }
+
+  // The mobile sheet is the only modal form; the sidebar and the floating
+  // panel both leave the page interactive.
+  function setModality() {
+    var modal = mobile.matches && !desktop.matches;
     ui.panel.setAttribute('aria-modal', modal ? 'true' : 'false');
-    ui.launcher.setAttribute('aria-expanded', 'true');
     document.documentElement.classList.toggle('bai-locked', modal);
     if (modal) fitViewport();
-    (ui.input.disabled ? ui.panel : ui.input).focus();
+  }
+
+  function open(opts) {
+    ui.panel.hidden = false;
+    setModality();
+    ui.launcher.setAttribute('aria-expanded', 'true');
+    setRail(desktop.matches);
+    remember(false);
+    if (!opts || opts.focus !== false) (ui.input.disabled ? ui.panel : ui.input).focus();
     wake();
   }
 
@@ -144,7 +189,20 @@
     ui.panel.hidden = true;
     ui.launcher.setAttribute('aria-expanded', 'false');
     document.documentElement.classList.remove('bai-locked');
+    setRail(false);                        // before focusing: the launcher is hidden while docked
+    remember(true);
     ui.launcher.focus();
+  }
+
+  // Remember a dismissal for this session only, so a fresh visit opens again.
+  function remember(isDismissed) {
+    try {
+      if (isDismissed) sessionStorage.setItem(DISMISS_KEY, '1');
+      else sessionStorage.removeItem(DISMISS_KEY);
+    } catch (e) {}
+  }
+  function dismissed() {
+    try { return sessionStorage.getItem(DISMISS_KEY) === '1'; } catch (e) { return false; }
   }
 
   function onPanelKeydown(e) {
