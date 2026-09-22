@@ -1,10 +1,15 @@
 /* =====================================================================
-   BADRI'S AI — floating chat widget
+   BADRI'S AI — chat widget
    ---------------------------------------------------------------------
    Streams answers from the Cloud Run endpoint set in this script tag's
    data-endpoint attribute (see server/README.md). On localhost it talks
-   to the local server on :8080. With no endpoint it renders nothing.
-   Model output is never inserted as HTML: see renderRich().
+   to the local server on :8080. With no endpoint it renders nothing —
+   which is also what keeps the page from reserving a sidebar column it
+   can't fill. Model output is never inserted as HTML: see renderRich().
+
+   Three forms, by width: a docked full-height sidebar at 1360px and up
+   (see setRail and --rail in index.html), a floating panel between, and
+   a modal full-screen sheet at 560px and below.
    ===================================================================== */
 (function () {
   'use strict';
