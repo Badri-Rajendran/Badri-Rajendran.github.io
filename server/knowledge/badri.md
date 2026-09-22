@@ -1,7 +1,7 @@
 # Badri's background
 
 ## Summary
-Full-Stack Software Engineer in the San Francisco Bay Area with 4+ years building and operating end-to-end systems: React/TypeScript and Vue front ends; Java/Spring Boot, Python/FastAPI and Node.js back ends; React Native mobile; and distributed services on AWS. Ships production GenAI (LLMs, RAG, multi-agent orchestration, evals, MCP) and builds agent platforms with sandboxed execution, telemetry and regression-gated releases. At Zoho, built finance software across Books, Expense and Payroll (the Expense–Payroll integration won 100+ new customers) and cut production incidents 30%; built subscription billing at Wipro; held 99%+ uptime on-call at Panasia, owning CI/CD, telemetry and safe rollouts end to end. Works Agile with designers, product and backend engineers. **Open to Software Engineer (SDE), Full-Stack Engineer and GenAI Engineer roles.**
+Full-Stack Software Engineer in the San Francisco Bay Area with 4+ years building and operating end-to-end systems: React/TypeScript and Vue front ends; Java/Spring Boot, Python/FastAPI and Node.js back ends; React Native mobile; and distributed services on AWS. Ships production GenAI (LLMs, RAG, multi-agent orchestration, evals, MCP) and builds agent platforms with sandboxed execution, telemetry and regression-gated releases. At Zoho, built finance software across Expense and Payroll (the Expense–Payroll integration won 100+ new Payroll customers) and set up CI for the Books repository, and cut recurring production incidents ~30%; built subscription billing at Wipro; held 99%+ uptime on-call at Panasia, owning CI/CD, telemetry and safe rollouts end to end. Works Agile with designers, product and backend engineers. The 4+ years are Zoho (Aug 2021 – July 2023), Wipro (Aug 2023 – July 2024), MarlnCorp (Feb – June 2025), Panasia (Sept 2025 – Mar 2026) and Presenter Prep (July 2026 – present). **Open to Software Engineer (SDE), Full-Stack Engineer and GenAI Engineer roles.**
 
 ## About me
 - Name: Badri Rajendran. Based in the San Francisco Bay Area, CA.
@@ -82,16 +82,20 @@ A hackathon project that uses Jac's graph-native AI to verify crisis reports, pr
 - Stack: Jac, FastAPI, MongoDB, Next.js + React, Python, TypeScript. Team repo: https://github.com/amirkhabaza/JacHacks2026
 
 ### Autonomous-SRE: https://github.com/Badri-Rajendran/Autonomous-SRE
-A self-healing incident agent built to cut MTTR and burnout: it detects errors, researches root causes across the codebase and the web, generates patches, and loops in a human by voice (Bland AI) for sign-off. Language: JavaScript.
+A self-healing incident agent built to cut MTTR and burnout: it detects errors, researches root causes across the codebase and the web, generates patches, and loops in a human by voice (Bland AI) for sign-off. Stack: JavaScript.
 
 ### NYC Real Estate Intelligence (May 2026): https://github.com/Badri-Rajendran/NYC-Real-Estate-Intelligence
 An end-to-end ML pipeline that classifies NYC properties as undervalued, fair or overvalued using five public civic APIs, including Census, NYPD, NYC DOE and Walk Score. Includes an XGBoost feature-engineering pipeline, a hybrid recommender, and a Claude conversational agent for natural-language queries. Stack: Python, scikit-learn, XGBoost, SoQL, Claude.
 
 ### NYC Capital Budget Explorer: https://github.com/Badri-Rajendran/NYC_Capital_Budget_Explorer
-A civic-transparency web platform that visualizes daily-updated city budget data and folds in user feedback, to foster accountability in government spending. Language: JavaScript.
+A civic-transparency web platform that visualizes daily-updated city budget data and folds in user feedback, to foster accountability in government spending. Stack: JavaScript.
 
 ### LMS Learning Platform (MarlnCorp): https://github.com/MarlnCorp-ai/LMS-React-App
 A modern Learning Management System frontend in React and TailwindCSS, with course management, enrollment, progress tracking and quizzes, shipped from prototype to production.
+
+### This portfolio site and Badri.ai: https://github.com/Badri-Rajendran/Badri-Rajendran.github.io
+The site you're reading this on, and me. The page is static and has no dependencies, no framework and no build step; it renders as an agent execution trace, where an SVG filament draws itself down the page as you scroll and each section lights up as a node, over a canvas starfield with a star-trail cursor. Badri.ai is the assistant docked beside it: answers stream in a word at a time from a small Python backend that keeps the model key server-side, answers only from a curated file of facts about me, refuses anything off-topic, and is rate-limited per visitor.
+- Stack: vanilla HTML, CSS and JavaScript, SVG, Canvas 2D, Python, server-sent events.
 
 ## Skills
 - Generative AI: Claude API, Gemini API, OpenAI API, LangChain, LangGraph, RAG, hybrid retrieval (BM25 + vector), cross-encoder reranking, multi-agent orchestration, MCP servers, embeddings and vector search, sentence-transformers, LLM-as-Judge evals, tool calling, prompt engineering, fine-tuning, Hugging Face.
