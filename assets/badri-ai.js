@@ -117,7 +117,7 @@
         h('span', { 'class': 'bai-head__dot', 'aria-hidden': 'true' }),
         h('div', { 'class': 'bai-head__text' }, [
           h('h2', { id: 'bai-title', text: 'Badri.ai' }),
-          h('p', { text: 'AI version of Badri · may make mistakes · email for anything important' })
+          h('p', { text: 'AI version of Badri · trained on my career and projects' })
         ]),
         close
       ]),
