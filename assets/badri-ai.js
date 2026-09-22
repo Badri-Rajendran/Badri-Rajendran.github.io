@@ -25,14 +25,17 @@
   var WAKE_LIMIT_MS = 60000;   // keep retrying a failed connection this long (Cloud Run cold start)
   var RETRY_DELAY_MS = 3000;
   var WAKE_AFTER_MS = 5 * 60 * 1000;   // skip the wake-up ping if we reached the service this recently
-  var CUT_OFF = 'The answer was cut off. Please try again.';
-  var WAKING = 'Waking up — the first answer can take up to a minute…';
-  var GREETING = "Hi, I'm Badri.ai 👋 Ask me about my experience, projects, skills, or education.";
+  var CUT_OFF = 'I got cut off there. Please try again.';
+  var WAKING = 'Waking the server — it sleeps when idle, so this first answer takes ~40s…';
+  var GREETING = "Hi 👋 I'm Badri.ai. I can walk you through the projects, the roles, or what I'm looking for next.";
+  // Sent verbatim as the question, and hidden for good after the first message,
+  // so each slot is scarce: one per visitor intent, none of them a dead end.
+  // Keep the first one word-for-word — persona.md has a rule keyed to it.
   var SUGGESTIONS = [
     'What are you working on now?',
-    'Tell me about PolicyPal',
-    "What's your GenAI experience?",
-    'How can I contact you?'
+    'What roles are you open to?',
+    'How does PolicyPal stay grounded?',
+    'What have you shipped at work?'
   ];
   var ALLOWED_PROTOCOLS = ['https:', 'mailto:', 'tel:'];
   // **bold** | [text](url) | https://url | email | +phone
@@ -117,7 +120,7 @@
         h('span', { 'class': 'bai-head__dot', 'aria-hidden': 'true' }),
         h('div', { 'class': 'bai-head__text' }, [
           h('h2', { id: 'bai-title', text: 'Badri.ai' }),
-          h('p', { text: 'AI version of Badri · trained on my career and projects' })
+          h('p', { text: 'An AI trained on my career and projects' })
         ]),
         close
       ]),
