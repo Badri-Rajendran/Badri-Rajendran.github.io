@@ -1116,6 +1116,10 @@ section{ position:relative; scroll-margin-top:90px; }
     }
 
     function build(){
+      // Collapse before measuring. The SVG sits at top:0 with an explicit
+      // height, so it counts toward scrollHeight — measuring first would let
+      // the page height ratchet up on every reflow and never shrink back.
+      svg.setAttribute('height', 0);
       var docW = document.documentElement.clientWidth;
       var docH = document.documentElement.scrollHeight;
       svg.setAttribute('width', docW);
