@@ -1,5 +1,5 @@
 /* =====================================================================
-   BADRI'S AI — chat widget
+   BADRI.AI — chat widget
    ---------------------------------------------------------------------
    Streams answers from the Cloud Run endpoint set in this script tag's
    data-endpoint attribute (see server/README.md). On localhost it talks
@@ -27,7 +27,7 @@
   var WAKE_AFTER_MS = 5 * 60 * 1000;   // skip the wake-up ping if we reached the service this recently
   var CUT_OFF = 'The answer was cut off. Please try again.';
   var WAKING = 'Waking up — the first answer can take up to a minute…';
-  var GREETING = "Hi, I'm Badri's AI 👋 Ask me about my experience, projects, skills, or education.";
+  var GREETING = "Hi, I'm Badri.ai 👋 Ask me about my experience, projects, skills, or education.";
   var SUGGESTIONS = [
     'What are you working on now?',
     'Tell me about PolicyPal',
@@ -98,7 +98,7 @@
 
   function buildUI() {
     var launcher = h('button', { type: 'button', 'class': 'bai-launcher', 'aria-expanded': 'false',
-      'aria-controls': 'bai-panel', 'aria-label': "Chat with Badri's AI", html: ICONS.star });
+      'aria-controls': 'bai-panel', 'aria-label': 'Chat with Badri.ai', html: ICONS.star });
     var close = h('button', { type: 'button', 'class': 'bai-close', 'aria-label': 'Close chat', html: ICONS.close });
     var log = h('div', { 'class': 'bai-log', role: 'log', 'aria-live': 'off', 'aria-label': 'Conversation' });
     var chips = h('div', { 'class': 'bai-chips' }, SUGGESTIONS.map(function (q) {
@@ -108,7 +108,7 @@
       placeholder: 'Ask about my work…', 'data-interactive': '' });
     var send = h('button', { type: 'submit', 'class': 'bai-send', 'aria-label': 'Send', html: ICONS.send + ICONS.stop });
     var form = h('form', { 'class': 'bai-form' }, [
-      h('label', { 'class': 'bai-sr', 'for': 'bai-input', text: "Ask Badri's AI a question" }), input, send
+      h('label', { 'class': 'bai-sr', 'for': 'bai-input', text: 'Ask Badri.ai a question' }), input, send
     ]);
     var status = h('div', { 'class': 'bai-sr', 'aria-live': 'polite' });
     var panel = h('section', { id: 'bai-panel', 'class': 'bai-panel', role: 'dialog', 'aria-modal': 'false',
@@ -116,7 +116,7 @@
       h('header', { 'class': 'bai-head' }, [
         h('span', { 'class': 'bai-head__dot', 'aria-hidden': 'true' }),
         h('div', { 'class': 'bai-head__text' }, [
-          h('h2', { id: 'bai-title', text: "Badri's AI" }),
+          h('h2', { id: 'bai-title', text: 'Badri.ai' }),
           h('p', { text: 'AI version of Badri · may make mistakes · email for anything important' })
         ]),
         close
@@ -247,7 +247,7 @@
     var bubble = addMessage('assistant', '');
     var answer = '';
     bubble.setAttribute('aria-busy', 'true');
-    announce("Badri's AI is replying…");
+    announce('Badri.ai is replying…');
     setBusy(true);
 
     streamChat(history.slice(-MAX_HISTORY), controller.signal, function (delta) {

@@ -1,5 +1,5 @@
 /* =====================================================================
-   BADRI'S AI — chat widget (see assets/badri-ai.js)
+   BADRI.AI — chat widget (see assets/badri-ai.js)
    Uses the site's :root tokens from index.html, including --rail, which
    index.html defines and which reserves the column this panel docks into
    at 1360px and up. The site's global prefers-reduced-motion rule also

@@ -1,4 +1,4 @@
-"""Badri's AI chat endpoint (Cloud Run function).
+"""Badri.ai chat endpoint (Cloud Run function).
 
 Handling order: CORS → method → body size → validation → rate limit → SSE stream.
 """
