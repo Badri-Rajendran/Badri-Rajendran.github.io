@@ -5,7 +5,7 @@ from collections.abc import Iterator
 
 from openai import OpenAI, Timeout
 
-from config import SETTINGS
+from config import CONTACT_EMAIL, SETTINGS
 from prompt import SYSTEM_PROMPT
 from validation import ApiError
 
@@ -23,7 +23,7 @@ class UpstreamError(Exception):
 def _get_client() -> OpenAI:
     global _client
     if not SETTINGS.openai_api_key:
-        raise ApiError("unavailable", 503, "The assistant isn't available right now.")
+        raise ApiError("unavailable", 503, f"I'm offline right now. You can reach me at {CONTACT_EMAIL}.")
     if _client is None:
         _client = OpenAI(api_key=SETTINGS.openai_api_key, timeout=_TIMEOUT, max_retries=_MAX_RETRIES)
     return _client

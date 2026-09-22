@@ -36,13 +36,19 @@ def clean_messages(body) -> list[dict]:
         if not isinstance(content, str) or not content.strip():
             raise _invalid("Each message needs non-empty text content.")
         if message["role"] == "user" and CODE_FENCE in content:
-            raise ApiError("code_not_allowed", 400, "Please ask about Badri's background; code isn't accepted here.")
+            # Matches the off-topic line in knowledge/persona.md: the same paste
+            # refused by the model and by us should not sound like two people.
+            raise ApiError("code_not_allowed", 400,
+                           "I can only talk about my work and background. I don't review code here — "
+                           "want to hear about PolicyPal or CodeSage?")
         if len(content) > MAX_MESSAGE_CHARS:
             raise ApiError("message_too_long", 400, f"Messages are limited to {MAX_MESSAGE_CHARS} characters.")
         cleaned.append({"role": message["role"], "content": content.strip()})
 
     if sum(len(m["content"]) for m in cleaned) > MAX_TOTAL_CHARS:
-        raise ApiError("too_many_messages", 400, "This conversation is too long. Please start a new one.")
+        # The widget has no reset control, so don't ask for one.
+        raise ApiError("too_many_messages", 400,
+                       "We've covered a lot — reload the page to start a fresh conversation.")
     if cleaned[-1]["role"] != "user":
         raise _invalid("The last message must be from the user.")
 

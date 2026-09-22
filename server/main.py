@@ -11,14 +11,13 @@ from flask import Request, Response
 from werkzeug.exceptions import RequestEntityTooLarge
 
 import llm
-from config import SETTINGS
+from config import CONTACT_EMAIL, SETTINGS
 from ratelimit import SlidingWindowLimiter
 from sse import SSE_OPEN, sse
 from validation import ApiError, clean_messages
 
 MAX_BODY_BYTES = 32 * 1024
 ALLOWED_METHODS = "GET, POST, OPTIONS"
-CONTACT_EMAIL = "badriathindran@gmail.com"
 
 PER_MINUTE = SlidingWindowLimiter(SETTINGS.rate_per_minute, 60)
 PER_DAY = SlidingWindowLimiter(SETTINGS.rate_per_day, 86_400)
@@ -36,7 +35,7 @@ def chat(request: Request) -> Response:
                      streamed=err.status == 413)
     except Exception as exc:  # never leak internals to the visitor
         _log_error("server_error", exc)
-        return _json({"error": {"code": "server_error", "message": "Something went wrong."}}, 500, cors)
+        return _json({"error": {"code": "server_error", "message": "Something broke on my end. Please try again."}}, 500, cors)
 
 
 def _handle(request: Request, origin: str, cors: dict) -> Response:
@@ -110,7 +109,9 @@ def _check_rate_limits(ip: str) -> None:
     for limiter in (PER_MINUTE, PER_DAY):
         wait = limiter.hit(ip)
         if wait:
-            raise ApiError("rate_limited", 429, "You're sending messages too quickly.",
+            # The widget appends " Please try again in N s." from Retry-After,
+            # so this must read as a complete sentence without saying that itself.
+            raise ApiError("rate_limited", 429, "You're asking faster than I can answer.",
                            {"Retry-After": str(math.ceil(wait))})
     if GLOBAL.hit("*"):
         raise ApiError("unavailable", 503, f"I've reached my daily chat limit. Please email me at {CONTACT_EMAIL}.")

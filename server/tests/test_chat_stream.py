@@ -41,7 +41,7 @@ def test_unconfigured_api_key_is_503_json(client, monkeypatch):
     import llm
 
     def unavailable(history):
-        raise ApiError("unavailable", 503, "The assistant isn't available right now.")
+        raise ApiError("unavailable", 503, "I'm offline right now.")
     monkeypatch.setattr(llm, "stream_reply", unavailable)
 
     response = post(client)
