@@ -26,7 +26,7 @@ A personal portfolio for a **full-stack software engineer** with 4+ years buildi
 - **A scroll-following SVG path** — a single filament is generated through anchor points with Catmull-Rom smoothing, drawn on scroll via `stroke-dashoffset`, with a traveling comet-head (`getPointAtLength`) and section nodes that activate as you arrive.
 - **A night-sky star-trail cursor** — the native cursor is hidden and replaced by an eased glowing star that trails gold stardust, chased by a small 5-star constellation with spring physics; background stars brighten and lean toward the pointer as it passes.
 - **Data-driven content** — every project, role, and skill lives in one `DATA` object. Adding a project is a one-object edit; no markup to touch.
-- **Badri's AI** — a floating chat widget that answers questions about my career, projects, experience, and education, streamed from a small serverless endpoint so the OpenAI key never reaches the browser.
+- **Badri.ai** — a chat assistant that answers questions about my career, projects, experience, and education, streamed from a small serverless endpoint so the OpenAI key never reaches the browser. On wide screens it's docked as a full-height sidebar and the page takes the rest; on smaller ones it stays a floating widget.
 - **Zero build, zero dependencies** — static files (`index.html` plus the widget in `assets/`). Drop them on any static host and they just work.
 - **Responsive & accessible** — fluid layouts, a mobile menu, `focus-visible` styles, and full `prefers-reduced-motion` support that disables the trail/animation and restores the native cursor.
 
@@ -66,9 +66,9 @@ A few decisions worth calling out, since they're the interesting part:
 
 ---
 
-## 🤖 Badri's AI
+## 🤖 Badri.ai
 
-A chat widget in the bottom-right corner answers visitors' questions about me, in my voice, with a clear note that it's an AI.
+A chat panel answers visitors' questions about me, in my voice, with a clear note that it's an AI. At 1360px and wider it's docked open as a full-height sidebar on the right and the page reflows into the column beside it; closing it hands the width back. Below that it's the familiar launcher in the bottom-right corner, and on phones a full-screen sheet.
 
 ```
 GitHub Pages (static)                       GCP Cloud Run function                        OpenAI
@@ -130,7 +130,7 @@ All editable content lives in a single `DATA` object near the top of the inline 
 
 It renders automatically. Experience, skills, and social links are edited the same way in the same object — there's no other markup to update.
 
-> **Keep Badri's AI in sync:** the chatbot answers from `server/knowledge/badri.md`, not from `DATA`. When you change `DATA`, update that file too and redeploy the endpoint.
+> **Keep Badri.ai in sync:** the chatbot answers from `server/knowledge/badri.md`, not from `DATA`. When you change `DATA`, update that file too and redeploy the endpoint.
 
 ---
 

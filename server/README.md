@@ -1,4 +1,4 @@
-# Badri's AI — chat endpoint
+# Badri.ai — chat endpoint
 
 A small Python serverless function that answers questions about Badri for the chat widget on https://badri-rajendran.github.io. It keeps the OpenAI key server-side, builds the system prompt from `knowledge/*.md`, and streams answers back as server-sent events.
 

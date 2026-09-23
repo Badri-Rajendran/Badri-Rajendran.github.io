@@ -5,3 +5,4 @@ __pycache__/
 .pytest_cache/
 server/DEPLOY.md
 server/env.yaml
+server/knowledge/work-experience.md

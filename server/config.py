@@ -3,6 +3,9 @@
 import os
 from dataclasses import dataclass
 
+# Every message that hands a visitor a way to reach me: keep one copy.
+CONTACT_EMAIL = "badriathindran@gmail.com"
+
 
 @dataclass(frozen=True)
 class Settings:

@@ -1,10 +1,15 @@
 /* =====================================================================
-   BADRI'S AI — floating chat widget
+   BADRI.AI — chat widget
    ---------------------------------------------------------------------
    Streams answers from the Cloud Run endpoint set in this script tag's
    data-endpoint attribute (see server/README.md). On localhost it talks
-   to the local server on :8080. With no endpoint it renders nothing.
-   Model output is never inserted as HTML: see renderRich().
+   to the local server on :8080. With no endpoint it renders nothing —
+   which is also what keeps the page from reserving a sidebar column it
+   can't fill. Model output is never inserted as HTML: see renderRich().
+
+   Three forms, by width: a docked full-height sidebar at 1360px and up
+   (see setRail and --rail in index.html), a floating panel between, and
+   a modal full-screen sheet at 560px and below.
    ===================================================================== */
 (function () {
   'use strict';
@@ -20,20 +25,25 @@
   var WAKE_LIMIT_MS = 60000;   // keep retrying a failed connection this long (Cloud Run cold start)
   var RETRY_DELAY_MS = 3000;
   var WAKE_AFTER_MS = 5 * 60 * 1000;   // skip the wake-up ping if we reached the service this recently
-  var CUT_OFF = 'The answer was cut off. Please try again.';
-  var WAKING = 'Waking up — the first answer can take up to a minute…';
-  var GREETING = "Hi, I'm Badri's AI 👋 Ask me about my experience, projects, skills, or education.";
+  var CUT_OFF = 'I got cut off there. Please try again.';
+  var WAKING = 'Waking the server — it sleeps when idle, so this first answer takes ~40s…';
+  var GREETING = "Hi 👋 I'm Badri.ai. I can walk you through the projects, the roles, or what I'm looking for next.";
+  // Sent verbatim as the question, and hidden for good after the first message,
+  // so each slot is scarce: one per visitor intent, none of them a dead end.
+  // Keep the first one word-for-word — persona.md has a rule keyed to it.
   var SUGGESTIONS = [
     'What are you working on now?',
-    'Tell me about PolicyPal',
-    "What's your GenAI experience?",
-    'How can I contact you?'
+    'What roles are you open to?',
+    'How does PolicyPal stay grounded?',
+    'What have you shipped at work?'
   ];
   var ALLOWED_PROTOCOLS = ['https:', 'mailto:', 'tel:'];
   // **bold** | [text](url) | https://url | email | +phone
   var TOKEN = /\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\(([^)\s]+)\)|(https:\/\/[^\s<>()]*[^\s<>().,;:!?'"])|([\w.+-]+@[\w-]+(?:\.[\w-]+)+)|(\+\d[\d ().-]{7,}\d)/g;
   var mobile = window.matchMedia('(max-width:560px)');
+  var desktop = window.matchMedia('(min-width:1360px)');   // must match the --rail breakpoint in index.html
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var DISMISS_KEY = 'bai-rail-dismissed';
 
   var ICONS = {
     star: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.6 6.3L21 9l-4.8 4.3L17.6 21 12 17.3 6.4 21l1.4-7.7L3 9l6.4-.7z"/></svg>',
@@ -55,6 +65,26 @@
     if (!document.hidden) wake();
   });
 
+  // On a wide screen the chat is docked open on arrival. Never steal focus for it.
+  // This runs after the capability check above, so a page that can't chat never
+  // reserves an empty column.
+  if (desktop.matches && !dismissed()) open({ focus: false });
+
+  // Crossing a breakpoint with the panel open has to re-shape it: docked sidebar
+  // above 1360, floating panel between, modal sheet below 560.
+  listen(desktop, function () {
+    if (ui.panel.hidden) return;
+    setModality();
+    setRail(desktop.matches);
+  });
+  listen(mobile, function () {
+    if (!ui.panel.hidden) setModality();   // otherwise aria-modal sticks and the focus trap stays armed
+  });
+  function listen(mq, fn) {
+    if (mq.addEventListener) mq.addEventListener('change', fn);
+    else if (mq.addListener) mq.addListener(fn);
+  }
+
   /* =================================================================
      1) DOM
      ================================================================= */
@@ -71,7 +101,7 @@
 
   function buildUI() {
     var launcher = h('button', { type: 'button', 'class': 'bai-launcher', 'aria-expanded': 'false',
-      'aria-controls': 'bai-panel', 'aria-label': "Chat with Badri's AI", html: ICONS.star });
+      'aria-controls': 'bai-panel', 'aria-label': 'Chat with Badri.ai', html: ICONS.star });
     var close = h('button', { type: 'button', 'class': 'bai-close', 'aria-label': 'Close chat', html: ICONS.close });
     var log = h('div', { 'class': 'bai-log', role: 'log', 'aria-live': 'off', 'aria-label': 'Conversation' });
     var chips = h('div', { 'class': 'bai-chips' }, SUGGESTIONS.map(function (q) {
@@ -81,7 +111,7 @@
       placeholder: 'Ask about my work…', 'data-interactive': '' });
     var send = h('button', { type: 'submit', 'class': 'bai-send', 'aria-label': 'Send', html: ICONS.send + ICONS.stop });
     var form = h('form', { 'class': 'bai-form' }, [
-      h('label', { 'class': 'bai-sr', 'for': 'bai-input', text: "Ask Badri's AI a question" }), input, send
+      h('label', { 'class': 'bai-sr', 'for': 'bai-input', text: 'Ask Badri.ai a question' }), input, send
     ]);
     var status = h('div', { 'class': 'bai-sr', 'aria-live': 'polite' });
     var panel = h('section', { id: 'bai-panel', 'class': 'bai-panel', role: 'dialog', 'aria-modal': 'false',
@@ -89,8 +119,8 @@
       h('header', { 'class': 'bai-head' }, [
         h('span', { 'class': 'bai-head__dot', 'aria-hidden': 'true' }),
         h('div', { 'class': 'bai-head__text' }, [
-          h('h2', { id: 'bai-title', text: "Badri's AI" }),
-          h('p', { text: 'AI version of Badri · may make mistakes · email for anything important' })
+          h('h2', { id: 'bai-title', text: 'Badri.ai' }),
+          h('p', { text: 'An AI trained on my career and projects' })
         ]),
         close
       ]),
@@ -123,14 +153,37 @@
   /* =================================================================
      2) OPEN / CLOSE / KEYBOARD
      ================================================================= */
-  function open() {
-    var modal = mobile.matches;
-    ui.panel.hidden = false;
+  // Dock the panel as a full-height sidebar (or undock it). The class on <html>
+  // is what reserves the column via --rail, so the page reflows with it.
+  function setRail(on) {
+    var stuck = nearBottom(ui.log);
+    document.documentElement.classList.toggle('bai-rail-open', on);
+    // A sidebar the visitor never opened shouldn't announce itself as a dialog.
+    ui.panel.setAttribute('role', on ? 'complementary' : 'dialog');
+    if (on) ui.panel.setAttribute('aria-modal', 'false');
+    autoGrow();                            // the textarea's inline height is width-dependent
+    if (stuck) scrollToBottom(ui.log, false);
+    // the page's scroll trace and nav are sized from content width, and a rail
+    // toggle changes it without firing a window resize
+    window.dispatchEvent(new CustomEvent('bai:layout'));
+  }
+
+  // The mobile sheet is the only modal form; the sidebar and the floating
+  // panel both leave the page interactive.
+  function setModality() {
+    var modal = mobile.matches && !desktop.matches;
     ui.panel.setAttribute('aria-modal', modal ? 'true' : 'false');
-    ui.launcher.setAttribute('aria-expanded', 'true');
     document.documentElement.classList.toggle('bai-locked', modal);
     if (modal) fitViewport();
-    (ui.input.disabled ? ui.panel : ui.input).focus();
+  }
+
+  function open(opts) {
+    ui.panel.hidden = false;
+    setModality();
+    ui.launcher.setAttribute('aria-expanded', 'true');
+    setRail(desktop.matches);
+    remember(false);
+    if (!opts || opts.focus !== false) (ui.input.disabled ? ui.panel : ui.input).focus();
     wake();
   }
 
@@ -144,7 +197,20 @@
     ui.panel.hidden = true;
     ui.launcher.setAttribute('aria-expanded', 'false');
     document.documentElement.classList.remove('bai-locked');
+    setRail(false);                        // before focusing: the launcher is hidden while docked
+    remember(true);
     ui.launcher.focus();
+  }
+
+  // Remember a dismissal for this session only, so a fresh visit opens again.
+  function remember(isDismissed) {
+    try {
+      if (isDismissed) sessionStorage.setItem(DISMISS_KEY, '1');
+      else sessionStorage.removeItem(DISMISS_KEY);
+    } catch (e) {}
+  }
+  function dismissed() {
+    try { return sessionStorage.getItem(DISMISS_KEY) === '1'; } catch (e) { return false; }
   }
 
   function onPanelKeydown(e) {
@@ -184,7 +250,7 @@
     var bubble = addMessage('assistant', '');
     var answer = '';
     bubble.setAttribute('aria-busy', 'true');
-    announce("Badri's AI is replying…");
+    announce('Badri.ai is replying…');
     setBusy(true);
 
     streamChat(history.slice(-MAX_HISTORY), controller.signal, function (delta) {

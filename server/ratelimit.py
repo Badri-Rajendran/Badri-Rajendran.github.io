@@ -19,6 +19,8 @@ class SlidingWindowLimiter:
 
     def hit(self, key: str) -> float:
         """Record a hit and return 0, or return the seconds to wait if the key is over its limit."""
+        if self.limit <= 0:
+            return self.window   # a limit of 0 disables the endpoint; refuse, don't crash
         with self._lock:
             now = self._clock()
             self._calls += 1

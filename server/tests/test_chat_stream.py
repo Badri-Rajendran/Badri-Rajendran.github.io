@@ -41,7 +41,7 @@ def test_unconfigured_api_key_is_503_json(client, monkeypatch):
     import llm
 
     def unavailable(history):
-        raise ApiError("unavailable", 503, "The assistant isn't available right now.")
+        raise ApiError("unavailable", 503, "I'm offline right now.")
     monkeypatch.setattr(llm, "stream_reply", unavailable)
 
     response = post(client)
@@ -147,3 +147,16 @@ def test_global_daily_cap_returns_503(client, fake_reply, main_module):
     capped = post(client, headers={"X-Forwarded-For": "198.51.100.2"})
     assert capped.status_code == 503
     assert "badriathindran@gmail.com" in capped.get_json()["error"]["message"]
+
+
+def test_daily_limit_has_its_own_message_and_no_retry_after(client, fake_reply, main_module):
+    main_module.PER_DAY = SlidingWindowLimiter(limit=1, window_seconds=86_400)
+
+    assert post(client).status_code == 200
+    capped = post(client)
+    message = capped.get_json()["error"]["message"]
+
+    assert capped.status_code == 429
+    assert "Retry-After" not in capped.headers  # the honest value is 86400, which helps nobody
+    assert "today" in message
+    assert "badriathindran@gmail.com" in message

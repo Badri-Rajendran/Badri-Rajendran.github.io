@@ -1,3 +1,4 @@
+import time
 from dataclasses import replace
 from types import SimpleNamespace as NS
 
@@ -133,3 +134,19 @@ def test_logs_usage_without_message_text(fake_client, capsys):
     log = capsys.readouterr().out
     assert '"cached_tokens": 64' in log
     assert "secret answer" not in log and "What do you do?" not in log
+
+
+def test_a_stalled_upstream_raises_instead_of_hanging(monkeypatch):
+    """Headers are already flushed by now, so overrunning Cloud Run's limit would end the
+    stream silently. The budget turns that into an UpstreamError main.py can report."""
+    monkeypatch.setattr(llm, "_BUDGET_S", 0.05)
+    client = FakeClient([delta("Hi, "), delta("I'm Badri."), completed()])
+
+    events = llm._events(client, HISTORY)
+    assert next(events) == ("delta", {"t": "Hi, "})
+    time.sleep(0.06)
+
+    with pytest.raises(llm.UpstreamError, match="timed out"):
+        next(events)
+    events.close()
+    assert client.stream.closed
