@@ -1,6 +1,7 @@
 """The only module that talks to OpenAI. Streams a reply as (event, data) pairs."""
 
 import json
+import time
 from collections.abc import Iterator
 
 from openai import OpenAI, Timeout
@@ -10,10 +11,16 @@ from prompt import SYSTEM_PROMPT
 from validation import ApiError
 
 _client: OpenAI | None = None
-# A stalled attempt fails over quickly; the worst case (3 x 15 s plus backoff) stays under
-# the 60 s Cloud Run request timeout.
+# Each attempt is up to 5 s connecting plus 15 s waiting for a chunk, and the SDK may sleep
+# on a server-sent Retry-After (it caps that at 120 s). So the timeouts alone do NOT bound
+# the call: _BUDGET_S does. We have already flushed headers by the time OpenAI is contacted,
+# so overrunning Cloud Run's 60 s limit would end the stream with no error event at all —
+# the visitor just watches silence. Caveat: a long Retry-After inside responses.create()
+# can still overrun, since the first deadline check only runs once create() returns.
+# Bounding that too would mean max_retries=0 and hand-rolled retries; not worth it here.
 _TIMEOUT = Timeout(15.0, connect=5.0)
-_MAX_RETRIES = 2
+_MAX_RETRIES = 1
+_BUDGET_S = 50.0
 
 
 class UpstreamError(Exception):
@@ -38,6 +45,7 @@ def stream_reply(history: list[dict]) -> Iterator[tuple[str, dict]]:
 
 
 def _events(client: OpenAI, history: list[dict]) -> Iterator[tuple[str, dict]]:
+    deadline = time.monotonic() + _BUDGET_S
     stream = client.responses.create(
         model=SETTINGS.openai_model,
         instructions=SYSTEM_PROMPT,
@@ -49,7 +57,11 @@ def _events(client: OpenAI, history: list[dict]) -> Iterator[tuple[str, dict]]:
         stream=True,
     )
     try:
+        if time.monotonic() > deadline:
+            raise UpstreamError("timed out before the first chunk")
         for event in stream:
+            if time.monotonic() > deadline:
+                raise UpstreamError("timed out mid-stream")
             if event.type == "response.output_text.delta":
                 yield "delta", {"t": event.delta}
             elif event.type == "response.completed":

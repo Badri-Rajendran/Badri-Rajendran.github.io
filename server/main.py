@@ -106,13 +106,17 @@ def _client_ip(request: Request) -> str:
 
 
 def _check_rate_limits(ip: str) -> None:
-    for limiter in (PER_MINUTE, PER_DAY):
-        wait = limiter.hit(ip)
-        if wait:
-            # The widget appends " Please try again in N s." from Retry-After,
-            # so this must read as a complete sentence without saying that itself.
-            raise ApiError("rate_limited", 429, "You're asking faster than I can answer.",
-                           {"Retry-After": str(math.ceil(wait))})
+    wait = PER_MINUTE.hit(ip)
+    if wait:
+        # The widget appends " Please try again in N s." from Retry-After,
+        # so this must read as a complete sentence without saying that itself.
+        raise ApiError("rate_limited", 429, "You're asking faster than I can answer.",
+                       {"Retry-After": str(math.ceil(wait))})
+    # No Retry-After on the daily cap: the honest value is 86400, and "try again in
+    # 86400 s" is neither useful nor true to why they were stopped.
+    if PER_DAY.hit(ip):
+        raise ApiError("rate_limited", 429,
+                       f"That's my limit of questions for today — you can email me at {CONTACT_EMAIL}.")
     if GLOBAL.hit("*"):
         raise ApiError("unavailable", 503, f"I've reached my daily chat limit. Please email me at {CONTACT_EMAIL}.")
 

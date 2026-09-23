@@ -71,3 +71,10 @@ def test_stale_keys_are_swept(clock):
     limiter.hit("c")  # third hit triggers a sweep
 
     assert set(limiter._hits) == {"c"}
+
+
+def test_a_limit_of_zero_refuses_instead_of_crashing():
+    """RATE_PER_MINUTE=0 is a way to switch the endpoint off, not a way to 500 every request."""
+    limiter = SlidingWindowLimiter(limit=0, window_seconds=60)
+
+    assert limiter.hit("ip") == 60
