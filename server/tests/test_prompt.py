@@ -26,7 +26,8 @@ def test_prompt_size_allows_caching_and_stays_small():
     "Zoho Corporation",
     "Stevens Institute of Technology",
     "Anna University",
-    "Open to Software Engineer (SDE), Full-Stack Engineer and GenAI Engineer roles",
+    "Open to Software Engineer (SDE), Full-Stack Engineer, Backend Engineer, Frontend Engineer, "
+    "Cross-Platform Developer, GenAI Engineer, Forward Deployed Engineer roles",
 ])
 def test_prompt_contains_key_facts(fact):
     assert fact in SYSTEM_PROMPT
