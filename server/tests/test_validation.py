@@ -71,11 +71,28 @@ def test_message_length_limit_is_inclusive():
     assert error_code({"messages": [user("a" * 1001)]}) == "message_too_long"
 
 
-def test_total_length_limit():
-    twelve_k = [user("a" * 1000) if i % 2 == 0 else assistant("a" * 1000) for i in range(11)] + [user("a" * 1000)]
-    assert len(clean_messages({"messages": twelve_k})) == 12
+def test_a_long_reply_does_not_block_the_next_question():
+    """The cap is on what a visitor types, not on what the model said back.
 
-    assert error_code({"messages": [assistant("a" * 1000)] + twelve_k}) == "too_many_messages"
+    MAX_OUTPUT_TOKENS allows replies well past 1,000 characters, and the widget re-sends
+    the whole conversation every turn. Capping assistant text too meant the first long
+    answer killed the conversation: every later message, however short, came back
+    "Messages are limited to 1000 characters." with no way out but a reload.
+    """
+    long_reply = "I built that at Zoho. " * 80   # 1,760 chars, a realistic answer length
+    body = {"messages": [user("What did you build?"), assistant(long_reply), user("Tell me more.")]}
+
+    cleaned = clean_messages(body)
+
+    assert len(cleaned) == 3
+    assert cleaned[1]["content"] == long_reply.strip()
+
+
+def test_total_length_limit():
+    twenty_four_k = [user("a" * 1000) if i % 2 == 0 else assistant("a" * 1000) for i in range(23)] + [user("a" * 1000)]
+    assert len(clean_messages({"messages": twenty_four_k})) == MAX_MESSAGES
+
+    assert error_code({"messages": [assistant("a" * 1000)] + twenty_four_k}) == "too_many_messages"
 
 
 def test_keeps_only_the_last_messages():
