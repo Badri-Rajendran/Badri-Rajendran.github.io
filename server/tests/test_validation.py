@@ -1,6 +1,6 @@
 import pytest
 
-from validation import MAX_MESSAGES, ApiError, clean_messages
+from validation import MAX_MESSAGES, MAX_TOTAL_CHARS, ApiError, clean_messages
 
 
 def user(content):
@@ -89,10 +89,13 @@ def test_a_long_reply_does_not_block_the_next_question():
 
 
 def test_total_length_limit():
-    twenty_four_k = [user("a" * 1000) if i % 2 == 0 else assistant("a" * 1000) for i in range(23)] + [user("a" * 1000)]
-    assert len(clean_messages({"messages": twenty_four_k})) == MAX_MESSAGES
+    """A backstop against a forged history, not something a real conversation reaches."""
+    at_limit = [user("a" * 1000) if i % 2 == 0 else assistant("a" * 1000) for i in range(MAX_TOTAL_CHARS // 1000 - 1)]
+    at_limit += [user("a" * 1000)]
+    assert sum(len(m["content"]) for m in at_limit) == MAX_TOTAL_CHARS
+    assert len(clean_messages({"messages": at_limit})) == MAX_MESSAGES
 
-    assert error_code({"messages": [assistant("a" * 1000)] + twenty_four_k}) == "too_many_messages"
+    assert error_code({"messages": [assistant("a" * 1000)] + at_limit}) == "too_many_messages"
 
 
 def test_keeps_only_the_last_messages():

@@ -16,7 +16,10 @@ from ratelimit import SlidingWindowLimiter
 from sse import SSE_OPEN, sse
 from validation import ApiError, clean_messages
 
-MAX_BODY_BYTES = 32 * 1024
+# Has to clear MAX_TOTAL_CHARS in validation.py, or this fires first and a visitor whose
+# message was tiny gets "That message is too large." instead of the conversation-length
+# message. Sized for 500k characters of UTF-8 plus JSON overhead.
+MAX_BODY_BYTES = 1024 * 1024
 ALLOWED_METHODS = "GET, POST, OPTIONS"
 
 PER_MINUTE = SlidingWindowLimiter(SETTINGS.rate_per_minute, 60)

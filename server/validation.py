@@ -1,9 +1,10 @@
 """Request validation and the error type shared by every error response."""
 
 MAX_MESSAGE_CHARS = 1_000   # per visitor message; see the role check in clean_messages
-# Sized so MAX_MESSAGES is what actually ends a conversation: 16 turns of full-length
-# replies land near this, and it stays inside MAX_BODY_BYTES in main.py.
-MAX_TOTAL_CHARS = 24_000
+# Deliberately generous: MAX_MESSAGES is what ends a conversation, not this. It stays
+# as a backstop against a forged history, so raise MAX_BODY_BYTES in main.py with it —
+# whichever is smaller is the one a visitor actually meets.
+MAX_TOTAL_CHARS = 500_000
 MAX_MESSAGES = 16
 ALLOWED_ROLES = ("user", "assistant")
 CODE_FENCE = "```"
