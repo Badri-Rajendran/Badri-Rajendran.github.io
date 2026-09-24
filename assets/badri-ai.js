@@ -281,19 +281,27 @@
     }, function () {
       renderNow(bubble, '', WAKING);
     }).then(function (finish) {
-      history.push({ role: 'assistant', content: answer });
       renderNow(bubble, answer, finish === 'length' ? '(answer trimmed for length)' : '');
       announce(bubble.textContent);
     }).catch(function (err) {
-      if (err.name === 'AbortError') {
-        renderNow(bubble, answer, '(stopped)');
-        announce('Stopped.');
+      var stopped = err.name === 'AbortError';
+      if (answer || stopped) {
+        // What streamed is what the visitor read, so keep it and say why it ended — the way
+        // a 'length' finish does. Replacing it with the error threw away a usable partial
+        // answer. '(connection lost)' covers an upstream failure too, where it overreaches
+        // a little; one note reads better than guessing which of the two ended the stream.
+        renderNow(bubble, answer, stopped ? '(stopped)' : '(connection lost)');
       } else {
         renderNow(bubble, err.message || connectionError());
         bubble.classList.add('bai-msg--error');
-        announce(bubble.textContent);
       }
+      announce(stopped ? 'Stopped.' : bubble.textContent);
     }).then(function () {
+      // One place, every outcome. A partial reply is still the context the next question
+      // refers back to, and dropping it left "tell me more about that" with no "that".
+      // Empty is skipped: the server rejects empty content, so pushing it would brick the
+      // conversation the way the per-message cap did.
+      if (answer) history.push({ role: 'assistant', content: answer });
       bubble.removeAttribute('aria-busy');
       setBusy(false);
     });

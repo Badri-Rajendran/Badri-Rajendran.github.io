@@ -33,6 +33,15 @@
   work" questions as Experience-only.
 - **The file inventories in §6.1 and §11 are incomplete** — more tests, more
   `.gcloudignore` entries, and `flask>=3.1` is now pinned.
+- **A conversation is 64 messages, not the 16 recorded in §5.4, §7.3 and §9.** The
+  per-message cap applies only to what a visitor types; the total-character and body-size
+  budgets were raised alongside it and are now backstops against a forged history rather
+  than limits a real conversation meets. A test asserts the three stay sized against each
+  other, so none of them can be moved alone.
+- **An interrupted reply is kept.** Stopping a reply, or losing the stream partway, leaves
+  the text that arrived on screen with a note and keeps it in the conversation history.
+  §8's flow drops it on both paths, which left a follow-up question referring to something
+  the model had never been told it said.
 
 ## 1. Goal
 
