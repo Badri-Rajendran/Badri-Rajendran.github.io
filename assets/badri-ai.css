@@ -19,7 +19,10 @@
 .bai-launcher:hover{ transform:translateY(-3px); box-shadow:0 20px 44px -12px var(--glow-gold),0 0 0 1px var(--gold-light); }
 .bai-launcher svg{ width:24px; height:24px; }
 .bai-launcher[aria-expanded="true"]{ transform:rotate(90deg); }
-body.menu-open .bai-launcher{ display:none; }
+/* Only where the mobile menu itself exists (its burger is hidden above 920px in
+   index.html). Unscoped, a menu-open class left behind by a resize kept the launcher
+   hidden on a viewport that has no way to clear it. */
+@media (max-width:920px){ body.menu-open .bai-launcher{ display:none; } }
 
 /* --- panel --- */
 .bai-panel{

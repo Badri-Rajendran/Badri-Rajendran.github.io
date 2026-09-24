@@ -1,8 +1,16 @@
 """Request validation and the error type shared by every error response."""
 
-MAX_MESSAGE_CHARS = 1_000
-MAX_TOTAL_CHARS = 12_000
-MAX_MESSAGES = 16
+MAX_MESSAGE_CHARS = 1_000   # per visitor message; see the role check in clean_messages
+# Deliberately generous: MAX_MESSAGES is what ends a conversation, not this. It stays
+# as a backstop against a forged history, so raise MAX_BODY_BYTES in main.py with it —
+# whichever is smaller is the one a visitor actually meets.
+MAX_TOTAL_CHARS = 500_000
+# The only one of the three a real conversation meets, and sized against the other two:
+# the worst case this endpoint allows is a 1,000-character question and a reply capped at
+# MAX_OUTPUT_TOKENS (725 ≈ 2,900 characters), so 64 messages is ~124,800 characters — a
+# quarter of MAX_TOTAL_CHARS, an eighth of MAX_BODY_BYTES. Must equal MAX_HISTORY in
+# assets/badri-ai.js, or the client sends turns the server silently drops.
+MAX_MESSAGES = 64
 ALLOWED_ROLES = ("user", "assistant")
 CODE_FENCE = "```"
 
@@ -41,7 +49,11 @@ def clean_messages(body) -> list[dict]:
             raise ApiError("code_not_allowed", 400,
                            "I can only talk about my work and background. I don't review code here — "
                            "want to hear about PolicyPal or CodeSage?")
-        if len(content) > MAX_MESSAGE_CHARS:
+        # Only what the visitor typed. Assistant turns are our own replies echoed back for
+        # context and routinely run past this cap, so applying it to them ended the
+        # conversation the first time an answer ran long. MAX_TOTAL_CHARS still bounds a
+        # forged one, as does MAX_BODY_BYTES.
+        if message["role"] == "user" and len(content) > MAX_MESSAGE_CHARS:
             raise ApiError("message_too_long", 400, f"Messages are limited to {MAX_MESSAGE_CHARS} characters.")
         cleaned.append({"role": message["role"], "content": content.strip()})
 

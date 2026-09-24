@@ -1,8 +1,47 @@
 # Badri's AI — Portfolio Chatbot Design
 
 - **Date:** 2026-09-17
-- **Status:** Reviewed
-- **Branch:** `feature/badri-ai`
+- **Status:** Historical record — this is the design as agreed on 2026-09-17, not a
+  description of what runs today. It has not been revised since it was written.
+- **Branch:** `feature/badri-ai` (long since merged)
+
+> **Read this as a record of intent, not as documentation.** The shipped product is
+> called **Badri.ai**, not "Badri's AI", and several decisions below were changed or
+> superseded during implementation. See **§0. What changed since** for the differences
+> that matter. Where this document and the code disagree, the code is right.
+
+## 0. What changed since
+
+- **Three UI forms, not two.** A docked full-height sidebar at 1360px and up (auto-opening
+  on arrival, dismissable for the session), a floating panel between, and a full-screen
+  sheet at 560px and below. §7.2 describes only the last two. The sidebar reserves its
+  column through the `--rail` custom property, which couples `index.html`,
+  `assets/badri-ai.css` and `assets/badri-ai.js` — keep the breakpoints in step.
+- **Renamed** from "Badri's AI" to **Badri.ai** throughout the product.
+- **Greeting, subtitle and all four suggestion chips were rewritten.** The chip list in
+  §7.2 is stale. The first chip is keyed to a rule in `persona.md`; keep it word for word.
+- **A character counter** sits under the composer, `aria-hidden`, announcing once through
+  the shared live region when the limit is actually reached.
+- **Cold-start handling**: the widget retries a failed connection for up to 60 s and shows
+  a "waking the server" message. §8 describes a single `fetch`.
+- **A wall-clock budget (`_BUDGET_S`) bounds the OpenAI call**, because the timeouts alone
+  do not. §6.4's client configuration is out of date.
+- **The per-day rate limit deliberately sends no `Retry-After`** — the honest value is
+  86,400 seconds, which helps nobody. §6.2 and §6.3 say otherwise; they are wrong.
+- **`persona.md` has gained several rules** since §6.5, including an exact-wording
+  off-topic line, grounding skill answers in a named role or project, and treating "at
+  work" questions as Experience-only.
+- **The file inventories in §6.1 and §11 are incomplete** — more tests, more
+  `.gcloudignore` entries, and `flask>=3.1` is now pinned.
+- **A conversation is 64 messages, not the 16 recorded in §5.4, §7.3 and §9.** The
+  per-message cap applies only to what a visitor types; the total-character and body-size
+  budgets were raised alongside it and are now backstops against a forged history rather
+  than limits a real conversation meets. A test asserts the three stay sized against each
+  other, so none of them can be moved alone.
+- **An interrupted reply is kept.** Stopping a reply, or losing the stream partway, leaves
+  the text that arrived on screen with a note and keeps it in the conversation history.
+  §8's flow drops it on both paths, which left a follow-up question referring to something
+  the model had never been told it said.
 
 ## 1. Goal
 
@@ -67,7 +106,7 @@ index.html + assets/badri-ai.{js,css}  ──POST {messages}──▶  CORS → 
 | `requirements-dev.txt` | `-r requirements.txt`, `pytest` |
 | `env.yaml` | Deploy-time env vars (git-ignored; kept in private deploy notes) |
 | `.gcloudignore` | Excludes `tests/`, `.venv/`, `__pycache__/`, `.pytest_cache/`. Must **not** exclude `knowledge/private.md`. |
-| `README.md` | Local run, one-time GCP setup, deploy, operations |
+| `README.md` | Local run only. **Superseded:** deploy, GCP setup, configuration and operations were deliberately removed from this public file and live in private notes outside the repo. Do not put them back. |
 | `tests/` | `test_sse.py`, `test_validation.py`, `test_ratelimit.py`, `test_prompt.py`, `test_cors.py`, `test_chat_stream.py` |
 
 ### 6.2 API

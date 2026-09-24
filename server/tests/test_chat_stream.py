@@ -71,8 +71,10 @@ def test_other_methods_are_405(client):
     assert response.get_json()["error"]["code"] == "method_not_allowed"
 
 
-def test_oversized_body_is_413(client, fake_reply):
-    body = {"messages": [{"role": "user", "content": "a" * 40_000}]}
+def test_oversized_body_is_413(client, fake_reply, main_module):
+    # Derived from the limit, not hardcoded: a fixed size silently stops testing
+    # anything the moment MAX_BODY_BYTES moves.
+    body = {"messages": [{"role": "user", "content": "a" * (main_module.MAX_BODY_BYTES + 1_000)}]}
 
     response = post(client, body=body)
 
@@ -80,8 +82,9 @@ def test_oversized_body_is_413(client, fake_reply):
     assert response.get_json()["error"]["code"] == "payload_too_large"
 
 
-def test_oversized_chunked_body_without_content_length_is_413(client, fake_reply):
-    body = json.dumps({"messages": [{"role": "user", "content": "a" * 40_000}]}).encode()
+def test_oversized_chunked_body_without_content_length_is_413(client, fake_reply, main_module):
+    oversized = "a" * (main_module.MAX_BODY_BYTES + 1_000)
+    body = json.dumps({"messages": [{"role": "user", "content": oversized}]}).encode()
 
     response = client.post("/", input_stream=io.BytesIO(body), headers={
         "Origin": ALLOWED_ORIGIN, "Content-Type": "application/json", "Transfer-Encoding": "chunked",
