@@ -1,6 +1,9 @@
+import json
+
 import pytest
 
-from validation import MAX_MESSAGES, MAX_TOTAL_CHARS, ApiError, clean_messages
+from config import SETTINGS
+from validation import MAX_MESSAGE_CHARS, MAX_MESSAGES, MAX_TOTAL_CHARS, ApiError, clean_messages
 
 
 def user(content):
@@ -99,10 +102,22 @@ def test_total_length_limit():
 
 
 def test_keeps_only_the_last_messages():
-    messages = [user(str(i)) if i % 2 == 0 else assistant(str(i)) for i in range(20)] + [user("last")]
+    over = MAX_MESSAGES + 4   # a fixed count stops testing the trim the moment MAX_MESSAGES moves
+    messages = [user(str(i)) if i % 2 == 0 else assistant(str(i)) for i in range(over)] + [user("last")]
 
     cleaned = clean_messages({"messages": messages})
 
-    assert len(cleaned) == MAX_MESSAGES == 16
+    assert len(cleaned) == MAX_MESSAGES
     assert cleaned[-1] == user("last")
-    assert cleaned[0] == messages[-16]
+    assert cleaned[0] == messages[-MAX_MESSAGES]
+
+
+def test_the_three_limits_are_sized_against_each_other(main_module):
+    """MAX_MESSAGES is the only limit a real conversation meets; the other two are backstops
+    against a forged history. If this fails, one of the three moved without the others."""
+    worst_reply = "a" * (SETTINGS.max_output_tokens * 4)   # ~4 characters per token
+    worst_case = [user("a" * MAX_MESSAGE_CHARS) if i % 2 == 0 else assistant(worst_reply)
+                  for i in range(MAX_MESSAGES - 1)] + [user("a" * MAX_MESSAGE_CHARS)]
+
+    assert len(clean_messages({"messages": worst_case})) == MAX_MESSAGES
+    assert len(json.dumps({"messages": worst_case}).encode()) <= main_module.MAX_BODY_BYTES

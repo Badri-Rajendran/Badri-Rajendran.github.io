@@ -5,7 +5,12 @@ MAX_MESSAGE_CHARS = 1_000   # per visitor message; see the role check in clean_m
 # as a backstop against a forged history, so raise MAX_BODY_BYTES in main.py with it —
 # whichever is smaller is the one a visitor actually meets.
 MAX_TOTAL_CHARS = 500_000
-MAX_MESSAGES = 16
+# The only one of the three a real conversation meets, and sized against the other two:
+# the worst case this endpoint allows is a 1,000-character question and a reply capped at
+# MAX_OUTPUT_TOKENS (725 ≈ 2,900 characters), so 64 messages is ~124,800 characters — a
+# quarter of MAX_TOTAL_CHARS, an eighth of MAX_BODY_BYTES. Must equal MAX_HISTORY in
+# assets/badri-ai.js, or the client sends turns the server silently drops.
+MAX_MESSAGES = 64
 ALLOWED_ROLES = ("user", "assistant")
 CODE_FENCE = "```"
 

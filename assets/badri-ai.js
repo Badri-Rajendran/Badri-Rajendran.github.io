@@ -20,7 +20,7 @@
   if (!ENDPOINT || !window.fetch || !window.TextDecoderStream) return;
 
   var EMAIL = 'badriathindran@gmail.com';
-  var MAX_HISTORY = 16;
+  var MAX_HISTORY = 64;    // must equal MAX_MESSAGES in server/validation.py, which trims to it
   var MAX_CHARS = 1000;
   var NEAR_CHARS = MAX_CHARS - 100;   // the counter turns gold for the last 100 characters
   var WAKE_LIMIT_MS = 60000;   // keep retrying a failed connection this long (Cloud Run cold start)
