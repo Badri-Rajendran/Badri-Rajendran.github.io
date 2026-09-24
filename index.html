@@ -21,6 +21,7 @@
 <meta name="twitter:image" content="https://badri-rajendran.github.io/preview.png" />
 <meta name="theme-color" content="#0A0D13" />
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<noscript><style>.reveal{ opacity:1 !important; transform:none !important; }</style></noscript>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -176,6 +177,9 @@ body.menu-open .nav__burger span:nth-child(3){ transform:translateY(-5px) rotate
   display:flex; flex-direction:column; justify-content:center; gap:6px; padding:0 var(--gutter);
   opacity:0; visibility:hidden; transition:opacity .35s var(--ease),visibility .35s; }
 body.menu-open .mobile-menu{ opacity:1; visibility:visible; }
+/* belt and braces with the matchMedia close above: the overlay can never cover a
+   viewport whose burger is hidden, even if the class somehow survives. */
+@media (min-width:921px){ .mobile-menu{ display:none; } }
 .mobile-menu a{ font-family:var(--font-display); font-size:clamp(2rem,9vw,3rem); font-weight:500; color:var(--text);
   padding:8px 0; display:flex; align-items:baseline; gap:16px; border-bottom:1px solid var(--line-2); }
 .mobile-menu a .idx{ font-family:var(--font-mono); font-size:0.85rem; color:var(--gold-deep); }
@@ -1059,17 +1063,28 @@ section{ position:relative; scroll-margin-top:90px; }
     window.addEventListener('scroll', onScrollChrome, { passive:true });
     onScrollChrome();
 
+    // One way in and out of the menu state, so the class and aria-expanded can't drift.
+    function setMenu(open){
+      document.body.classList.toggle('menu-open', open);
+      if(burger) burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
     if(burger){
       burger.addEventListener('click', function(){
-        var open = document.body.classList.toggle('menu-open');
-        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        setMenu(!document.body.classList.contains('menu-open'));
+      });
+      // Above the breakpoint the burger is display:none, so a menu left open while the
+      // viewport widens — rotating a phone, dragging a window — would be a full-screen
+      // overlay with nothing left to close it. Close it as we cross over.
+      var wide = window.matchMedia('(min-width:921px)');
+      var onWide = function(e){ if(e.matches) setMenu(false); };
+      if(wide.addEventListener) wide.addEventListener('change', onWide);
+      else if(wide.addListener) wide.addListener(onWide);
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && document.body.classList.contains('menu-open')){ setMenu(false); burger.focus(); }
       });
     }
     document.querySelectorAll('.mobile-menu a').forEach(function(a){
-      a.addEventListener('click', function(){
-        document.body.classList.remove('menu-open');
-        if(burger) burger.setAttribute('aria-expanded','false');
-      });
+      a.addEventListener('click', function(){ setMenu(false); });
     });
 
     // scrollspy: highlight active nav link
@@ -1413,20 +1428,28 @@ section{ position:relative; scroll-margin-top:90px; }
       }
     }
 
-    var running = true;
+    // Track the frame id rather than a boolean. A hidden tab keeps its already-scheduled
+    // callback queued, so re-arming on visibilitychange without cancelling first left two
+    // loops running — and doubled again on every tab switch until the page was reloaded.
+    var frameId = 0;
     function loop(t){
+      frameId = 0;
       drawStars(t || 0);
       drawFx();
-      if(running) requestAnimationFrame(loop);
+      schedule();
+    }
+    function schedule(){
+      if(!frameId && !document.hidden) frameId = requestAnimationFrame(loop);
     }
     document.addEventListener('visibilitychange', function(){
-      running = !document.hidden;
-      if(running) requestAnimationFrame(loop);
+      if(document.hidden){
+        if(frameId){ cancelAnimationFrame(frameId); frameId = 0; }
+      } else schedule();
     });
 
     window.addEventListener('resize', resize);
     resize();
-    requestAnimationFrame(loop);
+    schedule();
   }
 
   /* =================================================================
