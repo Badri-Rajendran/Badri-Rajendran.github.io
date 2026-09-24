@@ -35,7 +35,7 @@
   var SUGGESTIONS = [
     'What are you working on now?',
     'What roles are you open to?',
-    'How does PolicyPal stay grounded?',
+    'What is your flagship project?',
     'What have you shipped at work?'
   ];
   var ALLOWED_PROTOCOLS = ['https:', 'mailto:', 'tel:'];
