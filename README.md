@@ -102,7 +102,7 @@ No install step, no bundler, no `node_modules`. To try the chat widget locally, 
 
 ## 🌐 Deploy to GitHub Pages
 
-1. Push `index.html` and `assets/` (plus `preview.png` and `BadriRajendran_Resume.pdf`) to the repo root. `_config.yml` keeps `server/` and `docs/` off the published site.
+1. Push `index.html` and `assets/` (plus `preview.png`, `favicon.ico` and `BadriRajendran_Resume.pdf`) to the repo root. `_config.yml` keeps `server/` and `docs/` off the published site.
 2. **Settings → Pages → Source:** deploy from `main`, folder `/ (root)`.
 3. If the repo is named `Badri-Rajendran.github.io`, it goes live at the root domain automatically:
 

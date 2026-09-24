@@ -68,8 +68,8 @@ body.menu-open .bai-launcher{ display:none; }
 .bai-chip:hover{ border-color:var(--gold-deep); color:var(--gold-light); }
 
 /* --- composer --- */
-.bai-form{ display:flex; align-items:flex-end; gap:8px; padding:12px 14px calc(14px + env(safe-area-inset-bottom, 0px)); border-top:1px solid var(--line-2); }
-.bai-input{ flex:1; resize:none; min-height:42px; max-height:calc(1.5em * 5 + 22px); padding:10px 13px; border-radius:12px;
+.bai-form{ display:flex; flex-wrap:wrap; align-items:flex-end; gap:6px 8px; padding:12px 14px calc(14px + env(safe-area-inset-bottom, 0px)); border-top:1px solid var(--line-2); }
+.bai-input{ flex:1; min-width:0; resize:none; min-height:42px; max-height:calc(1.5em * 5 + 22px); padding:10px 13px; border-radius:12px;
   border:1px solid var(--line); background:var(--ink-2); color:var(--text); font:inherit; font-size:0.9rem; line-height:1.5; }
 .bai-input::placeholder{ color:var(--text-4); }
 .bai-input:focus{ outline:none; border-color:var(--gold-deep); box-shadow:0 0 0 3px rgba(242,176,67,0.12); }
@@ -82,6 +82,9 @@ body.menu-open .bai-launcher{ display:none; }
 .bai-send.is-busy{ background:var(--surface-3); color:var(--coral); border:1px solid rgba(255,140,107,0.45); }
 .bai-send.is-busy .bai-icon-send{ display:none; }
 .bai-send.is-busy .bai-icon-stop{ display:block; }
+/* wraps to its own line under the textarea; aria-hidden in the JS, so this is purely visual */
+.bai-count{ flex:0 0 100%; text-align:right; font-family:var(--font-mono); font-size:0.66rem; line-height:1; color:var(--text-3); transition:color .2s var(--ease); }
+.bai-count.is-near{ color:var(--gold); }
 
 /* keep a text caret in the input while the site's star cursor hides the native one */
 body.cursor-custom .bai-panel textarea:not(:disabled){ cursor:text !important; }

@@ -22,6 +22,7 @@
   var EMAIL = 'badriathindran@gmail.com';
   var MAX_HISTORY = 16;
   var MAX_CHARS = 1000;
+  var NEAR_CHARS = MAX_CHARS - 100;   // the counter turns gold for the last 100 characters
   var WAKE_LIMIT_MS = 60000;   // keep retrying a failed connection this long (Cloud Run cold start)
   var RETRY_DELAY_MS = 3000;
   var WAKE_AFTER_MS = 5 * 60 * 1000;   // skip the wake-up ping if we reached the service this recently
@@ -56,7 +57,14 @@
   var controller = null;   // AbortController while a reply streams
   var frame = 0, pending = null;
   var lastContact = 0;     // when we last reached (or tried to reach) the service
+  var atCap = false;       // so hitting the character limit announces once, not on every keystroke
   var ui = buildUI();
+
+  // A reload can restore text in the textarea without firing an input event, which would leave
+  // both the height and the count stale. Seed atCap first so a restored full box doesn't
+  // announce a limit the visitor hasn't just hit.
+  atCap = ui.input.value.length >= MAX_CHARS;
+  syncComposer();
 
   // A cold start takes ~40 s, so wake the service when a visitor arrives, returns to the tab
   // or opens the chat. No timers: an idle or hidden tab never keeps the service awake.
@@ -110,8 +118,11 @@
     var input = h('textarea', { id: 'bai-input', 'class': 'bai-input', rows: '1', maxlength: String(MAX_CHARS),
       placeholder: 'Ask about my work…', 'data-interactive': '' });
     var send = h('button', { type: 'submit', 'class': 'bai-send', 'aria-label': 'Send', html: ICONS.send + ICONS.stop });
+    // aria-hidden: a count read out on every keystroke is noise. The one moment it carries
+    // information — maxlength silently dropping keystrokes — goes through announce() instead.
+    var count = h('div', { 'class': 'bai-count', 'aria-hidden': 'true', text: '0 / ' + MAX_CHARS });
     var form = h('form', { 'class': 'bai-form' }, [
-      h('label', { 'class': 'bai-sr', 'for': 'bai-input', text: 'Ask Badri.ai a question' }), input, send
+      h('label', { 'class': 'bai-sr', 'for': 'bai-input', text: 'Ask Badri.ai a question' }), input, send, count
     ]);
     var status = h('div', { 'class': 'bai-sr', 'aria-live': 'polite' });
     var panel = h('section', { id: 'bai-panel', 'class': 'bai-panel', role: 'dialog', 'aria-modal': 'false',
@@ -144,10 +155,10 @@
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); }
     });
-    input.addEventListener('input', autoGrow);
+    input.addEventListener('input', syncComposer);
     panel.addEventListener('keydown', onPanelKeydown);
 
-    return { launcher: launcher, panel: panel, log: log, chips: chips, input: input, send: send, status: status };
+    return { launcher: launcher, panel: panel, log: log, chips: chips, input: input, send: send, count: count, status: status };
   }
 
   /* =================================================================
@@ -161,7 +172,7 @@
     // A sidebar the visitor never opened shouldn't announce itself as a dialog.
     ui.panel.setAttribute('role', on ? 'complementary' : 'dialog');
     if (on) ui.panel.setAttribute('aria-modal', 'false');
-    autoGrow();                            // the textarea's inline height is width-dependent
+    syncComposer();                        // the textarea's inline height is width-dependent
     if (stuck) scrollToBottom(ui.log, false);
     // the page's scroll trace and nav are sized from content width, and a rail
     // toggle changes it without firing a window resize
@@ -229,9 +240,20 @@
   }
   if (window.visualViewport) window.visualViewport.addEventListener('resize', fitViewport);
 
-  function autoGrow() {
+  // Everything the composer re-derives from its text: the textarea's height (its inline height
+  // is width-dependent, so a rail toggle re-runs this) and the character count. The input event
+  // misses ask() clearing the box, so every write to ui.input.value calls this instead.
+  function syncComposer() {
+    var n = ui.input.value.length;
     ui.input.style.height = 'auto';
     ui.input.style.height = ui.input.scrollHeight + 'px';
+    ui.count.textContent = n + ' / ' + MAX_CHARS;
+    ui.count.classList.toggle('is-near', n >= NEAR_CHARS);
+    // maxlength drops keystrokes with no feedback at all, and the counter is aria-hidden — so say
+    // it once here. Sharing ui.status with the reply announcements is safe: the input is disabled
+    // for the whole of a stream, so this can only fire while the visitor is typing.
+    if (n >= MAX_CHARS && !atCap) announce('Character limit reached, ' + MAX_CHARS + ' characters.');
+    atCap = n >= MAX_CHARS;
   }
 
   /* =================================================================
@@ -243,7 +265,7 @@
 
     ui.chips.hidden = true;
     ui.input.value = '';
-    autoGrow();
+    syncComposer();
     history.push({ role: 'user', content: text });
     addMessage('user', text);
 
